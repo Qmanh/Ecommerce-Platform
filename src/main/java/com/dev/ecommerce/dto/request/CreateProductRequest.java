@@ -1,8 +1,11 @@
 package com.dev.ecommerce.dto.request;
 
+import com.dev.ecommerce.model.Size;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class CreateProductRequest {
@@ -16,5 +19,5 @@ public class CreateProductRequest {
     private String category2;
     private String category3;
 
-    private String sizes;
+    private Set<Size> sizes = new HashSet<>();
 }

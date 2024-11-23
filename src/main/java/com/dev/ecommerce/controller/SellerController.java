@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -103,17 +104,18 @@ public class SellerController {
         return new ResponseEntity<>(report,HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<Seller>> getAllSeller(@RequestParam(required = false)AccountStatus status){
         List<Seller> sellers = sellerService.getAllSellers(status);
         return ResponseEntity.ok(sellers);
     }
 
-    @PatchMapping()
-    public ResponseEntity<Seller>updateSeller(@RequestHeader("Authorization")String jwt,
-                                              @RequestBody Seller seller)throws Exception{
-        Seller profile = sellerService.getSellerProfile(jwt);
-        Seller updatedSeller = sellerService.updateSeller(profile.getId(), seller);
+    @PatchMapping("{sellerId}/update-status/{accountStatus}")
+    public ResponseEntity<Seller>updateSellerAccountStatus(@RequestHeader("Authorization")String jwt,
+                                                           @PathVariable("sellerId")Long sellerId,
+                                              @PathVariable("accountStatus") AccountStatus accountStatus)throws Exception{
+        Seller seller = sellerService.getSellerById(sellerId);
+        Seller updatedSeller = sellerService.updateSellerAccountStatus(seller.getId(), accountStatus);
         return ResponseEntity.ok(updatedSeller);
     }
 

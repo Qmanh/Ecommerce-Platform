@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -41,7 +43,8 @@ public class Product extends abstractEntity{
     @ManyToOne
     private Seller seller;
 
-    private String sizes;
+    @OneToMany
+    private Set<Size> sizes = new HashSet<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();

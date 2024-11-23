@@ -29,8 +29,8 @@ public class AppConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/sellers/create","/sellers/login","/sellers/verify/{otp}").permitAll()
+                        .requestMatchers("/admin/*","/sellers/get-all","/sellers/{sellerId}/update-status/{accountStatus}").hasRole("ADMIN")
                         .requestMatchers("/sellers/**").hasAnyRole("SELLER")
-                        .requestMatchers("/admin/*").hasRole("ADMIN")
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
