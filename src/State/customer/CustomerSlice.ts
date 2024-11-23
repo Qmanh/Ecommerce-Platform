@@ -6,7 +6,7 @@ import { api } from "../../config/Api";
 //     "home/fetchHomePageData",
 //     async (_, {rejectWithValue}) =>{
 //         try {
-//             const response = await api.get('/home-page');
+//             const response = await api.get('/admin/home-category');
 //             console.log("home page ", response.data)
 //             return response.data;
 //         } catch (error:any) {

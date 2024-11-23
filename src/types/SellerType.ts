@@ -1,3 +1,4 @@
+import { getActiveElement } from "formik";
 
 export interface PickupAddress{
     name: string;
@@ -44,4 +45,14 @@ export interface SellerReport{
     totalOrders: number;
     canceledOrders: number;
     totalTransactions: number;
+}
+
+
+export enum AccountStatus {
+  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  DEACTIVATED = 'DEACTIVATED',
+  BANNED = 'BANNED',
+  CLOSED = 'CLOSED',
 }

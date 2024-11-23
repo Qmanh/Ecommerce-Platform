@@ -1,4 +1,4 @@
-import { Seller } from './../../types/SellerType';
+import { AccountStatus, Seller } from './../../types/SellerType';
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../config/Api";
 
@@ -16,6 +16,46 @@ export const fetchSellerProfile = createAsyncThunk<any,any>("/sellers/fetchSelle
             
         } catch (error) {
             console.log("error - - -", error)
+        }
+    }
+)
+
+
+export const getAllSeller = createAsyncThunk<any,any>("/sellers/getAllSeller",
+    async(params, {rejectWithValue}) => {
+        
+        try {
+            const response = await api.get("/sellers/get-all",{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                },
+                params:{
+                    ...params
+                }
+            })
+            console.log("params: ",params)
+            console.log("Get All Seller ", response.data)
+            return response.data
+            
+        } catch (error) {
+            console.log("error - - -", error)
+        }
+    }
+)
+
+export const updateAccountSellerStatus = createAsyncThunk<any,
+    {jwt: string,sellerId:Number, accountStatus: AccountStatus}
+> (
+    'sellers/updateAccountStatus',
+    async ({jwt,sellerId, accountStatus}, {rejectWithValue}) =>{
+        try {
+            const response = await api.patch(`/sellers/${sellerId}/update-status/${accountStatus}`,null,{
+                headers: {Authorization: `Bearer ${jwt}`}
+            })
+            console.log("seller update statusAccount ", response.data)
+            return response.data;
+        } catch (error:any) {
+            return rejectWithValue(error.response.data);
         }
     }
 )
@@ -65,6 +105,18 @@ const sellerSlice = createSlice({
             state.profile = action.payload;
         })
         .addCase(fetchSellerProfile.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+
+        builder.addCase(getAllSeller.pending,(state)=>{
+            state.loading = true;
+        })
+        .addCase(getAllSeller.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.sellers = action.payload;
+        })
+        .addCase(getAllSeller.rejected, (state, action)=>{
             state.loading = false;
             state.error = action.payload;
         })

@@ -1,13 +1,13 @@
 import { ManOutlined } from '@mui/icons-material'
 import { Divider } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Orders from './Orders'
 import OrderDetails from './OrderDetails'
 import UserDetails from './UserDetails'
 import Address from './Address'
-import { useAppDispatch } from '../../../State/Store'
-import { logout } from '../../../State/AuthSlice'
+import { useAppDispatch} from '../../../State/Store'
+import {  logout } from '../../../State/AuthSlice'
 
 const menu = [
     {name: "orders", path:"/account/orders"},
@@ -30,6 +30,7 @@ const Account = () => {
         
     };
     const location = useLocation();
+
 
   return (
     <div className='px-5 lg:px-52 min-h-screen mt-10'>

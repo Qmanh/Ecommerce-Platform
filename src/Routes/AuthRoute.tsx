@@ -1,21 +1,24 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../State/Store';
+import { useEffect } from 'react';
+import { fetchUserProfile } from '../State/AuthSlice';
+import AdminDashboard from '../admin/Pages/Dashboard/AdminDashboard';
+import Account from '../customer/pages/Account/Account';
+import Home from '../customer/pages/Home/Home';
 
 
-const AuthRoute = (props: any) => {
+const AuthRoute = ({data}:{data:any}) => {
+    const jwt = localStorage.getItem("jwt")
     
-    console.log(">>>props: ", props)
-
-    if (!props.item.user) {
-        
-        return <Navigate to="/" />;
-        
+    if(localStorage.getItem("role")==="ROLE_ADMIN" || data.user?.role=="ROLE_ADMIN"){
+        return <Outlet/>
+    }else if(data.user?.role=="ROLE_CUSTOMER" && localStorage.getItem("role")==="ROLE_CUSTOMER"){
+        return <Outlet/>
     }
-    return (
-        <>
-            {props.children}
-
-        </>
-    )
+    return <Navigate to="/" />
+   
+    
+    
 }
 
 export default AuthRoute

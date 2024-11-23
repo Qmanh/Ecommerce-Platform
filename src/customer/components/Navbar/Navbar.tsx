@@ -1,21 +1,29 @@
 
 import { AddShoppingCart, FavoriteBorder, Menu, Search, Storefront } from "@mui/icons-material";
 import { Avatar, Box, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategorySheet from "../CategorySheet";
 import { mainCategory } from "../../../data/category/mainCategory";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../State/Store";
 import { sellerLogin } from "../../../State/seller/sellerAuthSlice";
+import { fetchUserAddress, fetchUserProfile } from "../../../State/AuthSlice";
 
 const Navbar = () => {
 
     const theme = useTheme();
+    const jwt = localStorage.getItem("jwt");
     const isLarge = useMediaQuery(theme.breakpoints.up("lg"));
     const [selectedCategory, setSelectedCategory] = useState("men");
     const [showCategory, setShowCategory] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const {auth, seller} = useAppSelector(store=>store)
+
+    useEffect(()=>{
+        dispatch(fetchUserProfile(jwt))
+        dispatch(fetchUserAddress(jwt))
+    },[jwt])
 
     return (
         <>
@@ -55,7 +63,7 @@ const Navbar = () => {
                             <Search/>
                         </IconButton>
                         {
-                           localStorage.getItem("jwt")&& auth.user?.role==="ROLE_CUSTOMER" ?
+                           localStorage.getItem("jwt") && !localStorage.getItem("role") ?
                             <Button onClick={()=> navigate("/account/orders")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}
@@ -79,7 +87,7 @@ const Navbar = () => {
                                
                             </Button> 
                             :
-                            localStorage.getItem("jwt") && auth.user?.role==="ROLE_ADMIN" ?
+                            localStorage.getItem("jwt") && localStorage.getItem("role") ?
                             <Button onClick={()=> navigate("/admin")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}

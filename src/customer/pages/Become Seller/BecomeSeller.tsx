@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const BecomeSeller = () => {
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
     const handleShowPage = () =>{
@@ -28,9 +28,6 @@ const BecomeSeller = () => {
                 : <SellerLoginForm/>
             }
             <div className='mt-10 space-y-2'>
-                <h1 className='text-center text-sm font-medium'>
-                    have account
-                </h1>
                 <Button onClick={handleShowPage} fullWidth sx={{py:"11px"}} variant='outlined'>
                     {isLogin ? "Register":"Login"}
                 </Button>

@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react'
 import AdminDrawerList from '../../component/AdminDrawerList'
 import AdminRoutes from '../../../Routes/AdminRoutes'
-import { useAppDispatch } from '../../../State/Store'
+import { useAppDispatch, useAppSelector } from '../../../State/Store'
 import { fetchHomeCategories } from '../../../State/admin/adminSlice'
+import { fetchUserProfile } from '../../../State/AuthSlice'
 
 const AdminDashboard = () => {
     const toggleDrawer = () =>{}
-    const dispatch = useAppDispatch();
-
-    useEffect(()=>{
-        dispatch(fetchHomeCategories())
-    },[])
+    
   return (
     <div>
         <div className='lg:flex lg:h-[90vh]'>

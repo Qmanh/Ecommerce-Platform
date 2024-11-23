@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from '../customer/pages/Home/Home'
 import Auth from '../customer/pages/Auth/Auth'
@@ -16,13 +16,19 @@ import { AdminProtectedRoute } from '../Utils/ProtectedRoute'
 import AdminDashboard from '../admin/Pages/Dashboard/AdminDashboard'
 import SellerDashboard from '../seller/pages/SellerDashboard/SellerDashboard'
 import PrivateRoute from './PrivateRoute'
-import { useAppSelector } from '../State/Store'
+import { useAppDispatch, useAppSelector } from '../State/Store'
 import AuthRoute from './AuthRoute'
 import VerifySeller from '../customer/pages/Auth/VerifySeller'
+import { fetchUserProfile } from '../State/AuthSlice'
 
 
 const AppRoutes = () => {
     const { seller, auth } = useAppSelector(store => store)
+    const dispatch = useAppDispatch();
+
+    useEffect(()=>{
+        dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+    },[localStorage.getItem("jwt")])
     return (
         <>
             <Routes>
@@ -44,17 +50,14 @@ const AppRoutes = () => {
                     </PrivateRoute>}
                 />
 
-                <Route path="/admin/*" element={
-                    <AuthRoute item={auth}>
-                        <AdminDashboard/>
-                    </AuthRoute>}
-                />
+                <Route path="/admin/*" element={<AuthRoute data={auth}/>}>
+                    <Route path='/admin/**' element={<AdminDashboard/>}/>
+                </Route>
 
-                <Route path="/account/*" element={
-                    <AuthRoute item={auth}>
-                        <Account/>
-                    </AuthRoute>}
-                />
+                <Route path="/account/*" element={<AuthRoute data={auth}/>}
+                >
+                    <Route path="/account/**" element={<Account/>}/>
+                </Route>
 
             </Routes>
             

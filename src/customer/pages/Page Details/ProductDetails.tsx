@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../State/Store'
 import { fetchProductById } from '../../../State/customer/ProductSlice'
 import { useParams } from 'react-router-dom'
 import { AddItemRequest, addItemToCart } from '../../../State/customer/CartSlice'
+import { formatCurrency } from '../../../Utils/CustomCurrencyVND'
 
 const ProductDetails = () => {
 
@@ -72,10 +73,10 @@ const ProductDetails = () => {
           <div>
           <div className='price flex items-center gap-3 mt-5 text-2xl'>
             <span className='font-sans text-gray-800'>
-              {product.product?.sellingPrice} $
+              {formatCurrency(product.product?.sellingPrice|| 0)}
             </span>
             <span className='line-through text-gray-400'>
-              {product.product?.mrpPrice} $
+              {formatCurrency(product.product?.mrpPrice|| 0)}
             </span>
             <span className='text-primary-color font-semibold'>
               {product.product?.discountPercent}%
