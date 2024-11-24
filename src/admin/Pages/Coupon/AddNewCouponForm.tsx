@@ -2,8 +2,13 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Dayjs } from 'dayjs'
 import { useFormik } from 'formik'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import React from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import { Box, Button, Grid2, TextField } from '@mui/material'
+import { useAppDispatch } from '../../../State/Store'
+import { createCoupon, getAllCoupons } from '../../../State/admin/adminCouponSlice'
+import { toast } from 'react-toastify'
+import { formatCurrency } from '../../../Utils/CustomCurrencyVND'
+import { Navigate } from 'react-router-dom'
 
 interface CouponFormValues{
   code:string,
@@ -14,6 +19,9 @@ interface CouponFormValues{
 }
 
 const AddNewCouponForm = () => {
+  const dispatch = useAppDispatch();
+  const jwt = localStorage.getItem("jwt")||"";
+
   const formik = useFormik<CouponFormValues>({
     initialValues:{
       code:"",
@@ -22,15 +30,33 @@ const AddNewCouponForm = () => {
       validityEndDate:null,
       minimumOrderValue:0
     },
-    onSubmit:(values)=>{
+    onSubmit:(values,{ resetForm })=>{
       const formatedValues = {
         ...values,
         ValidityStartDate:values.validityStartDate?.toISOString(),
         ValidityEndDate:values.validityEndDate?.toISOString()
       }
+      dispatch(createCoupon({coupon:formatedValues, jwt}))
+      .then(()=>{
+        toast.success('Create Coupon Successfully!', {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+
+          resetForm();
+      })
       console.log("form submitted ", values,formatedValues)
     }
   })
+  useEffect(()=>{
+    <Navigate to="/admin/coupon"/>
+  },[jwt])
   return (
     <div>
       <h1 className='text-2xl font-bold text-primary-color pb-5 text-center'>Create New Coupon</h1>
@@ -64,8 +90,8 @@ const AddNewCouponForm = () => {
                 sx={{width:"100%"}}
                 label="Validity Start Date"
                 name='validityStartDate'
-                onChange={formik.handleChange}
                 value={formik.values.validityStartDate}
+                onChange={(e)=>{formik.setFieldValue("validityStartDate",e)}}
               />
             </Grid2>
             <Grid2 size={{xs:12, sm:6}}>
@@ -73,7 +99,7 @@ const AddNewCouponForm = () => {
                 sx={{width:"100%"}}
                 label="Validity End Date"
                 name='validityEndDate'
-                onChange={formik.handleChange}
+                onChange={(e)=>{formik.setFieldValue("validityEndDate",e)}}
                 value={formik.values.validityEndDate}
               />
             </Grid2>
@@ -89,13 +115,14 @@ const AddNewCouponForm = () => {
               />
             </Grid2>
             <Grid2 size={{xs:12}}>
-              <Button variant='contained' fullWidth sx={{py:".8rem"}}>
+              <Button type='submit' variant='contained' fullWidth sx={{py:".8rem"}}>
                 Create Coupon
               </Button>
             </Grid2>
           </Grid2>
         </Box>
       </LocalizationProvider>
+      
     </div>
   )
 }

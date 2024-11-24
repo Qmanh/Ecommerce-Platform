@@ -4,6 +4,7 @@ import AdminRoutes from '../../../Routes/AdminRoutes'
 import { useAppDispatch, useAppSelector } from '../../../State/Store'
 import { fetchHomeCategories } from '../../../State/admin/adminSlice'
 import { fetchUserProfile } from '../../../State/AuthSlice'
+import { getAllCoupons } from '../../../State/admin/adminCouponSlice'
 
 const AdminDashboard = () => {
     const toggleDrawer = () =>{}

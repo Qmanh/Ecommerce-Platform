@@ -1,3 +1,4 @@
+
 import { lightBlue } from '@mui/material/colors';
 import { Deal } from './DealTypes';
 export interface HomeData{
@@ -16,4 +17,18 @@ export interface HomeCategory {
     name?: string;
     image: string;
     parentCategoryId?: string;
+}
+
+export interface HomeCategoryUpdate {
+    categoryId: string;
+    section: HomeCategorySection | null;
+    name?: string;
+    image: string;
+}
+
+export enum HomeCategorySection{
+    ELECTRIC_CATEGORIES,
+    GRID,
+    SHOP_BY_CATEGORIES,
+    DEALS
 }

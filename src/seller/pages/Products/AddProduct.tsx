@@ -62,7 +62,7 @@ const AddProduct = () => {
   }
   const handleRemoveImage = (index: number)=>{
     const updatedImages = [...formik.values.images];
-    updatedImages.splice(index,1);
+    updatedImages.slice(index,1);
     formik.setFieldValue("images", updatedImages);
   }
 

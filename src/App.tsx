@@ -22,6 +22,7 @@ import { AdminProtectedRoute } from './Utils/ProtectedRoute';
 import AppRoutes from './Routes/AppRoutes';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getAllCoupons } from './State/admin/adminCouponSlice';
 
 
 

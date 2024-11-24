@@ -1,6 +1,12 @@
-import { Delete } from '@mui/icons-material';
-import { Button, FormControl, InputLabel, MenuItem, Paper, Select, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from '@mui/material'
-import React, { useState } from 'react'
+import { ChangeCircle, Delete } from '@mui/icons-material';
+import { Button, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from '@mui/material'
+import React, { useEffect, useReducer, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { deleteCoupon, getAllCoupons, updateActiveCoupon } from '../../../State/admin/adminCouponSlice';
+import { formatCurrency } from '../../../Utils/CustomCurrencyVND';
+import { lightBlue } from '@mui/material/colors';
+import { toast } from 'react-toastify';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -22,37 +28,80 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-const status = [
-  {status:'PENDING_VERIFICATION',title:'Pending Verification', description:'Account is pending'},
-  {status:'ACTIVE',title:'Active', description:'Account is active'},
-  {status:'SUSPENDED',title:'Suspended', description:'Account is temporarily suspended'},
-  {status:'DEACTIVATED',title:'Deactivated', description:'Account is deactivated'},
-  {status:'BANNED',title:'Banned', description:'Account is permanently banned'},
-  {status:'CLOSED',title:'Closed', description:'Account is permanently closed'},
-]
 
 const Coupon = () => {
-  const [accountStatus, setAccountStatus] = useState("ACTIVE");
-  const handleChange = (event:any)=>{
-    setAccountStatus(event.target.value)
+  const dispatch = useAppDispatch();
+  const {coupons} = useAppSelector(store=>store);
+  const jwt = localStorage.getItem("jwt")||"";
+  
+  const [updated, forceUpdate] = useReducer(x => x+1,0)
+
+
+  const handleUpdateActive =(couponId:any) =>{
+    
+    dispatch(updateActiveCoupon({jwt:jwt, id:couponId}))
+    .then(()=>{
+      toast.success('Update Active Successfully!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        forceUpdate();
+    })
+    .catch(()=>{
+      toast.error('Update Active Failed!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        forceUpdate();
+    })
   }
+
+  const handleDelete =(couponId:any) =>{
+    
+    dispatch(deleteCoupon({jwt:jwt, id:couponId}))
+    .then(()=>{
+      toast.success('Deleted Successfully!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        forceUpdate();
+    })
+    .catch(()=>{
+      toast.error('Deleted Failed!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        forceUpdate();
+    })
+  }
+  
+  useEffect(()=>{
+    dispatch(getAllCoupons(localStorage.getItem("jwt")))
+  },[updated])
 
   return (
     <>
@@ -63,25 +112,40 @@ const Coupon = () => {
                 <StyledTableCell>Coupon Code</StyledTableCell>
                 <StyledTableCell>Start Date</StyledTableCell>
                 <StyledTableCell>End Date</StyledTableCell>
-                <StyledTableCell align="right">Minimum Order Value</StyledTableCell>
-                <StyledTableCell align="right">Discount</StyledTableCell>
-                <StyledTableCell align="right">Status</StyledTableCell>
-                <StyledTableCell align="right">Delete</StyledTableCell>
+                <StyledTableCell >Minimum Value</StyledTableCell>
+                <StyledTableCell align="center">Discount</StyledTableCell>
+                <StyledTableCell align="center" >Status</StyledTableCell>
+                <StyledTableCell align="center">Action</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
+              {coupons.coupons?.map((coupon:any) => (
+                <StyledTableRow key={coupon.code}>
                   <StyledTableCell component="th" scope="row">
-                    {row.name}
+                    {coupon.code}
                   </StyledTableCell>
-                  <StyledTableCell>{row.calories}</StyledTableCell>
-                  <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                  <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    <Delete/>
+                  <StyledTableCell>{coupon.validityStartDate}</StyledTableCell>
+                  <StyledTableCell >{coupon.validityEndDate}</StyledTableCell>
+                  <StyledTableCell align="center">{formatCurrency(coupon.minimumOrderValue)}</StyledTableCell>
+                  <StyledTableCell align="center">{coupon.discountPercentage} %</StyledTableCell>
+                  <StyledTableCell align="center">
+                    <span style={{color:`${coupon.active ? '#339933':'#CC0000'}`,
+                                   borderColor:`${coupon.active ? '#339933':'#CC0000'}`}} 
+                                   className={`px-5 py-2 border rounded-full`}>
+                          {coupon.active ? `ACTIVE`:`NO ACTIVE`}
+                    </span>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <IconButton onClick={()=>handleUpdateActive(coupon.id)} >
+                      <ChangeCircle
+                      className='rounded-full transition-shadow duration-300 hover:shadow-lg hover:shadow-gray-600 mr-2'
+                      sx={{color:`${coupon.active ?'#339933':'#CC0000'}`, cursor:'pointer'}}/>
+                    </IconButton>
+                    
+                    <IconButton onClick={()=>handleDelete(coupon.id)}>
+                      <Delete className='rounded-full bg-blue-900 transition-shadow duration-300 hover:shadow-lg hover:shadow-gray-600' sx={{color:'#CCFFFF',cursor:'pointer', backgroundColor:lightBlue}}/>
+                    </IconButton>
+                    
                   </StyledTableCell>
                 </StyledTableRow>
               ))}

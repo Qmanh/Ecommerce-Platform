@@ -32,6 +32,21 @@ export const createHomeCategories = createAsyncThunk<HomeData, HomeCategory[]>(
     }
 )
 
+// export const updateHomeCategories = createAsyncThunk<HomeData, {homeCategory:HomeCategory;id:number}>(
+//     "home/createHomeCategories",
+//     async ({homeCategory, id}, {rejectWithValue}) =>{
+//         try {
+//             const response = await api.patch(`/admin/home-category/${id}`,homeCategory);
+//             console.log("home category updated -- ", response.data);
+//             return response.data;
+//         } catch (error:any) {
+//             const errorMessage = error.response?.data?.message || error.message || "Failed to create home categories";
+//             console.log("error ", errorMessage, error);
+//             return rejectWithValue(errorMessage);
+//         }
+//     }
+// )
+
 interface HomeState {
     homePageData: HomeData | null;
     homeCategories: HomeCategory[];

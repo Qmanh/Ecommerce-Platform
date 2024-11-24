@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import HomeCategoryTable from './HomeCategoryTable'
-import { useAppSelector } from '../../../State/Store'
+import { useAppDispatch, useAppSelector } from '../../../State/Store'
+import { createHomeCategories } from '../../../State/customer/CustomerSlice'
+import { HomeCategories } from '../../../data/HomeCategories'
 
 const GridTable = () => {
   const {customer}  = useAppSelector(store => store)

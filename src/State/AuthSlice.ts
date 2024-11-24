@@ -21,6 +21,7 @@ export const signin = createAsyncThunk<any, any>("/auth/signin",
             const response = await api.post("/auth/signing",loginRequest)
             console.log("login otp ", response.data)
             localStorage.setItem("jwt", response.data.jwt)
+            localStorage.setItem("role",response.data.role)
             return response.data;
         } catch (error) {
             console.log("error - - -", error)

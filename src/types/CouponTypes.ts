@@ -3,7 +3,7 @@ import { Cart } from "./CartTypes";
 export interface Coupon {
     id: number;
     code: string;
-    discountPercent: number;
+    discountPercentage: number;
     validityStartDate: string;
     validityEndDate: string;
     minimumOrderValue: number;

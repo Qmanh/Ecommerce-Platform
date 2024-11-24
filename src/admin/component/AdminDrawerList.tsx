@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DrawerList from '../../component/DrawerList'
 import { AccountBox, Add, Category, Dashboard, ElectricBolt, Home, IntegrationInstructions, LocalOffer, Logout } from '@mui/icons-material'
+import { useAppDispatch, useAppSelector } from '../../State/Store'
+import { getAllCoupons } from '../../State/admin/adminCouponSlice'
 
 const menu = [
   {
@@ -63,6 +65,7 @@ const menu2 = [
 ]
 
 const AdminDrawerList = ({toggleDrawer}:any) => {
+  
   return (
     <DrawerList menu={menu} menu2={menu2} toggleDrawer={toggleDrawer}/>
   )

@@ -1,8 +1,9 @@
 import {Divider, ListItemIcon, ListItemText } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../State/Store'
+import { useAppDispatch, useAppSelector } from '../State/Store'
 import { logout } from '../State/AuthSlice'
+import { getAllCoupons } from '../State/admin/adminCouponSlice'
 
 interface menuItem {
     name: string,
