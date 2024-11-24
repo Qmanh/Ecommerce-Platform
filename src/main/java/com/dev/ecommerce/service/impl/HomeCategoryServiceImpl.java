@@ -42,6 +42,12 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
         if(homeCategory.getCategoryId()!= null){
             existingCategory.setCategoryId(homeCategory.getCategoryId());
         }
+        if(homeCategory.getName() != null){
+            existingCategory.setName(homeCategory.getName());
+        }
+        if(homeCategory.getSection() != null){
+            existingCategory.setSection(homeCategory.getSection());
+        }
 
         return homeCategoryRepository.save(existingCategory);
 

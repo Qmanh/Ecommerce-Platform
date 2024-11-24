@@ -97,4 +97,13 @@ public class CouponServiceImpl implements CouponService {
         findCouponById(id);
         couponRepository.deleteById(id);
     }
+
+    @Override
+    public Coupon activeStatus(Long id) throws Exception {
+        Coupon coupon = findCouponById(id);
+
+        coupon.setActive(!coupon.isActive());
+
+        return couponRepository.save(coupon);
+    }
 }

@@ -22,22 +22,6 @@ public class AdminCouponController {
     private final UserService userService;
     private final CartService cartService;
 
-    @PostMapping("/apply")
-    public ResponseEntity<Cart> applyCoupon(@RequestParam String apply,
-                                            @RequestParam String code,
-                                            @RequestParam double orderValue,
-                                            @RequestHeader("Authorization")String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        Cart cart ;
-
-        if(apply.equals("true")){
-            cart = couponService.applyCoupon(code, orderValue, user);
-        }else{
-            cart = couponService.removeCoupon(code, user);
-        }
-
-        return ResponseEntity.ok(cart);
-    }
 
     @PostMapping("/create")
     public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon){
@@ -57,5 +41,12 @@ public class AdminCouponController {
         List<Coupon> coupons = couponService.findAllCoupons();
 
         return ResponseEntity.ok(coupons);
+    }
+
+    @PatchMapping("/update-active/{id}")
+    public ResponseEntity<?> updateActive(@PathVariable("id")Long id) throws Exception {
+        couponService.activeStatus(id);
+
+        return ResponseEntity.ok("Coupon updated successfully");
     }
 }

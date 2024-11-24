@@ -1,5 +1,6 @@
 package com.dev.ecommerce.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
@@ -28,8 +29,12 @@ public class Coupon extends abstractEntity {
 
     private double minimumOrderValue;
 
-    private boolean isActive=true;
+    private boolean isActive=false;
 
     @ManyToMany(mappedBy = "usedCoupons")
     private Set<User> usedByUser = new HashSet<>();
+
+    public void setActive(boolean isActive){
+        this.isActive = isActive;
+    }
 }

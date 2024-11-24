@@ -27,11 +27,11 @@ public class AppConfig {
                 SessionCreationPolicy.STATELESS
         ))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/products/*/reviews").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/sellers/create","/sellers/login","/sellers/verify/{otp}").permitAll()
                         .requestMatchers("/admin/*","/sellers/get-all","/sellers/{sellerId}/update-status/{accountStatus}").hasRole("ADMIN")
                         .requestMatchers("/sellers/**").hasAnyRole("SELLER")
-                        .requestMatchers("/api/products/*/reviews").permitAll()
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
