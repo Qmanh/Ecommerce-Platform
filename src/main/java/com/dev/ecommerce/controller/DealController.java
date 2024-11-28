@@ -1,9 +1,11 @@
 package com.dev.ecommerce.controller;
 
+import com.dev.ecommerce.dto.request.DealRequest;
 import com.dev.ecommerce.dto.response.ApiResponse;
 import com.dev.ecommerce.model.Deal;
 import com.dev.ecommerce.service.DealService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/admin/deals")
 public class DealController {
 
@@ -33,8 +36,9 @@ public class DealController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Deal> updateDeal(@PathVariable("id")Long id,
-                                           @RequestBody Deal deal) throws Exception {
-        Deal updatedDeal = dealService.updateDeal(deal,id);
+                                           @RequestBody DealRequest request) throws Exception {
+
+        Deal updatedDeal = dealService.updateDeal(request,id);
         return ResponseEntity.ok(updatedDeal);
     }
 

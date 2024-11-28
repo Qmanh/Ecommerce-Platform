@@ -2,6 +2,7 @@ package com.dev.ecommerce.service.impl;
 
 import com.dev.ecommerce.domain.OrderStatus;
 import com.dev.ecommerce.domain.PaymentStatus;
+import com.dev.ecommerce.dto.OrderDTO;
 import com.dev.ecommerce.model.*;
 import com.dev.ecommerce.repository.AddressRepository;
 import com.dev.ecommerce.repository.OrderItemRepository;
@@ -11,6 +12,9 @@ import com.dev.ecommerce.service.SellerService;
 import com.dev.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -93,8 +97,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> sellersOrder(Long sellerId) {
-        return orderRepository.findBySellerId(sellerId);
+    public List<OrderDTO> sellersOrder(Long sellerId, Integer pageNumber) {
+         Pageable pageable =  PageRequest.of(pageNumber!= null ? pageNumber:0, 5, Sort.unsorted());
+         List<Order>orders = orderRepository.findBySellerId(sellerId, pageable);
+
+         List<OrderDTO> orderDTOList = orders.stream()
+                .map(order -> {
+                    OrderDTO orderDto = new OrderDTO();
+                    orderDto.setId(order.getId());
+                    orderDto.setUser(order.getUser());
+                    orderDto.setSellerId(order.getSellerId());
+                    orderDto.setOrderDate(order.getOrderDate());
+                    orderDto.setDeliverDate(order.getDeliverDate());
+                    orderDto.setDiscount(order.getDiscount());
+                    orderDto.setPaymentStatus(order.getPaymentStatus());
+                    orderDto.setTotalMrpPrice(order.getTotalMrpPrice());
+                    orderDto.setPaymentDetails(order.getPaymentDetails());
+                    orderDto.setTotalSellingPrice(order.getTotalSellingPrice());
+                    orderDto.setOrderStatus(order.getOrderStatus());
+                    orderDto.setOrderItems(order.getOrderItems());
+                    orderDto.setTotalItem(order.getTotalItem());
+                    orderDto.setShippingAddress(order.getShippingAddress());
+                    return orderDto;
+                }).collect(Collectors.toList());
+        return orderDTOList;
+    }
+
+    @Override
+    public Integer getTotalPageNumber(Long sellerId) {
+        List<Order>orders = orderRepository.findBySellerId(sellerId);
+        Integer totalItems = orders.size();
+        Integer totalPageNumber = totalItems / 5;
+        return totalPageNumber;
     }
 
     @Override

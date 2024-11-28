@@ -1,5 +1,6 @@
 package com.dev.ecommerce.service.impl;
 
+import com.dev.ecommerce.dto.request.DealRequest;
 import com.dev.ecommerce.model.Deal;
 import com.dev.ecommerce.model.HomeCategory;
 import com.dev.ecommerce.repository.DealRepository;
@@ -7,12 +8,14 @@ import com.dev.ecommerce.repository.HomeCategoryRepository;
 import com.dev.ecommerce.service.DealService;
 import com.dev.ecommerce.service.HomeCategoryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DealServiceImpl implements DealService {
 
     private final DealRepository dealRepository;
@@ -37,9 +40,10 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public Deal updateDeal(Deal deal, Long id) throws Exception {
+    public Deal updateDeal(DealRequest deal, Long id) throws Exception {
+        log.info("Deal: {}",deal);
         Deal existingDeal = dealRepository.findById(id).orElse(null);
-        HomeCategory category = homeCategoryRepository.findById(deal.getCategory().getId()).orElse(null);
+        HomeCategory category = homeCategoryRepository.findById(deal.getCategoryId()).orElse(null);
 
         if(existingDeal!= null){
             if(deal.getDiscount()!= null){
