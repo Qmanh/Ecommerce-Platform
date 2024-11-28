@@ -4,6 +4,7 @@ import React from 'react'
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
 import { discount } from '../../../data/filter/discount';
 import { createDeal } from '../../../State/admin/dealSlice';
+import { toast } from 'react-toastify';
 
 const CreateDealForm = () => {
     const dispatch = useAppDispatch();
@@ -13,7 +14,7 @@ const CreateDealForm = () => {
             discount:0,
             category:""
         },
-        onSubmit:(values)=>{
+        onSubmit:(values,{ resetForm })=>{
             console.log("submit ", values)
             const reqData = {
                 discount: values.discount,
@@ -21,7 +22,20 @@ const CreateDealForm = () => {
                     id:values.category
                 }
             }
-            dispatch(createDeal(reqData))
+            dispatch(createDeal(reqData)).then(()=>{
+                toast.success('Create Deal Successfully!', {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                resetForm();
+            })
+            
         }
     })
   return (

@@ -26,6 +26,11 @@ export interface Order {
     orderStatus: OrderStatus;
     totalItem: number;
     deliverDate:string
+    totalPageNumber:number;
+}
+export interface OrderList {
+    Orders: Order[];
+    totalPage:number;
 }
 
 export enum OrderStatus {

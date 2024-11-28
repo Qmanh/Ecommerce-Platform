@@ -28,6 +28,26 @@ export const createDeal = createAsyncThunk("deals/createDeal",
     }
 )
 
+export const updateDeal = createAsyncThunk<Deal, {id: number; data:any}
+> (
+    'deal/updateDeal',
+    async ({id, data}, {rejectWithValue}) =>{
+        try {
+            console.log("check data: ", data)
+            const response = await api.patch(`/admin/deals/${id}`,data);
+            console.log("deal updated ", response)
+            return response.data;
+        } catch (error:any) {
+            console.log("error ", error)
+            if(error.response && error.response.data){
+                return rejectWithValue(error.response.data);
+            }else{
+                return rejectWithValue("An error occured while updating the deal.");
+            }
+        }
+    }
+)
+
 export const getAllDeals = createAsyncThunk(
     "deals/getAllDeals",
     async (_, {rejectWithValue}) =>{
@@ -49,8 +69,9 @@ export const getAllDeals = createAsyncThunk(
 
 export const deleteDeal = createAsyncThunk<ApiResponse, {id:number}>(
     "deals/deleteDeal",
-    async (id, {rejectWithValue}) =>{
+    async ({id}, {rejectWithValue}) =>{
         try {
+            console.log("check id: ",id)
             const response = await api.delete(`/admin/deals/${id}`,{
                 headers: {Authorization:`Bearer ${localStorage.getItem("jwt")}`}
             })
@@ -111,24 +132,24 @@ const dealSlice = createSlice({
                 state.error = action.payload as string;
             })
 
-            // .addCase(updateDeal.pending, (state)=>{
-            //     state.loading = true;
-            //     state.error = null;
-            //     state.dealUpdated=false;
-            // })
+            .addCase(updateDeal.pending, (state)=>{
+                state.loading = true;
+                state.error = null;
+                state.dealUpdated=false;
+            })
 
-            // .addCase(updateDeal.fulfilled, (state,action)=>{
-            //     state.loading = false;
-            //     state.dealUpdated = true;
-            //     const index = state.deals.findIndex((deal)=> deal.id === action.payload.id);
-            //     if(index !== -1){
-            //         state.deals[index] = action.payload;
-            //     }
-            // })
-            // .addCase(updateDeal.rejected, (state, action)=>{
-            //     state.loading = false;
-            //     state.error = action.payload as string;
-            // })
+            .addCase(updateDeal.fulfilled, (state,action)=>{
+                state.loading = false;
+                state.dealUpdated = true;
+                const index = state.deals.findIndex((deal)=> deal.id === action.payload.id);
+                if(index !== -1){
+                    state.deals[index] = action.payload;
+                }
+            })
+            .addCase(updateDeal.rejected, (state, action)=>{
+                state.loading = false;
+                state.error = action.payload as string;
+            })
     }
 })
 

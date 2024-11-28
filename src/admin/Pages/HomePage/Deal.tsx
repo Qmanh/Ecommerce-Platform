@@ -1,8 +1,11 @@
-import { Button } from '@mui/material'
-import React, { useState } from 'react'
+import { Box, Button, Modal } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import DealTable from './DealTable';
 import DealCategoryTable from './DealCategoryTable';
 import CreateDealForm from './CreateDealForm';
+import { getAllDeals } from '../../../State/admin/dealSlice';
+import { useAppDispatch } from '../../../State/Store';
+import DealForm from './DealForm';
 
 const tabs = [
   "Deals",
@@ -11,6 +14,10 @@ const tabs = [
 ]
 const Deal = () => {
   const [activeTab, setActiveTab] = useState("Deals");
+  function handleClose(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div>
       <div className='flex gap-4'>

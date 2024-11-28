@@ -7,7 +7,7 @@ import { Alert, AlertTitle, Button, Stack } from '@mui/material'
 const PrivateRoute = (props: any) => {
     console.log(">>>props: ", props)
 
-    if (!props.item.profile) {
+    if (localStorage.getItem("role")!= "ROLE_SELLER") {
         return <Navigate to="/" />;
     }
     return (

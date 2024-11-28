@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,10 +7,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, Modal } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
-import { getAllDeals } from '../../../State/admin/dealSlice';
+import { deleteDeal, getAllDeals } from '../../../State/admin/dealSlice';
+import DealForm from './DealForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -32,15 +33,46 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
 
+  
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
+
 
 const DealTable = () => {
     const dispatch = useAppDispatch();
+    const [open, setOpen] = useState(false);
+    const [category, setCategory] = useState();
     const {deal} = useAppSelector(store => store);
+
+    const handleOpen = (deal:any) => {
+      setOpen(true);
+      setCategory(deal);
+      console.log("check check: ",deal)
+    }
+
+    const handleClose = () => {
+      setOpen(false)
+    };
+    const handleDeleteDeal = (data:any) =>{
+      console.log("delete id: ",data.id)
+      dispatch(deleteDeal({ id: Number(data.id) })).then(() => {
+        dispatch(getAllDeals());
+    });
+    }
 
     useEffect(()=>{
       dispatch(getAllDeals())
     },[])
     return (
+      <>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
@@ -54,7 +86,7 @@ const DealTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {deal.deals.map((item, index) => (
+              {deal.deals.map((item:any, index:any) => (
                 <StyledTableRow key={item.id}>
                   <StyledTableCell component="th" scope="row">
                     {index + 1}
@@ -66,12 +98,12 @@ const DealTable = () => {
                   <StyledTableCell align="right">{item.discount}</StyledTableCell>
                   <StyledTableCell align="right">
                     <Button>
-                        <Edit/>
+                        <Edit onClick={()=>handleOpen(item)}/>
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell align="right">
                     <IconButton>
-                        <Delete sx={{color:"red"}}/>
+                        <Delete onClick={()=> handleDeleteDeal(item)} sx={{color:"red"}}/>
                     </IconButton>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -79,6 +111,18 @@ const DealTable = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+              <DealForm data={category}/>
+          </Box>
+        </Modal>
+      </>
       );
 }
 

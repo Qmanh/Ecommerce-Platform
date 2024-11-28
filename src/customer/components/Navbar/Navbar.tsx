@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../State/Store";
 import { sellerLogin } from "../../../State/seller/sellerAuthSlice";
 import { fetchUserAddress, fetchUserProfile } from "../../../State/AuthSlice";
+import { fetchSellerProfile } from "../../../State/seller/sellerSlice";
 
 const Navbar = () => {
 
@@ -21,10 +22,15 @@ const Navbar = () => {
     const {auth, seller} = useAppSelector(store=>store)
 
     useEffect(()=>{
-        dispatch(fetchUserProfile(jwt))
-        dispatch(fetchUserAddress(jwt))
+        if(localStorage.getItem("role")=="ROLE_SELLER"){
+            dispatch(fetchSellerProfile(jwt))
+        }
+        if(jwt && localStorage.getItem("role")!="ROLE_SELLER"){
+            dispatch(fetchUserProfile(jwt))
+            dispatch(fetchUserAddress(jwt))
+        }
+        
     },[jwt])
-
     return (
         <>
             <Box className="sticky top-0 left-0 right-0 bg-white" sx={{zIndex:2}}>
@@ -75,7 +81,7 @@ const Navbar = () => {
                                
                             </Button> 
                             :
-                            localStorage.getItem("jwt") && seller.profile ?
+                            localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_SELLER"?
                             <Button onClick={()=> navigate("/seller")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}
@@ -87,7 +93,7 @@ const Navbar = () => {
                                
                             </Button> 
                             :
-                            localStorage.getItem("jwt") && localStorage.getItem("role") ?
+                            localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_ADMIN" ?
                             <Button onClick={()=> navigate("/admin")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}

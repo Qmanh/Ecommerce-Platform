@@ -25,10 +25,6 @@ import { fetchUserProfile } from '../State/AuthSlice'
 const AppRoutes = () => {
     const { seller, auth } = useAppSelector(store => store)
     const dispatch = useAppDispatch();
-
-    useEffect(()=>{
-        dispatch(fetchUserProfile(localStorage.getItem("jwt")))
-    },[localStorage.getItem("jwt")])
     return (
         <>
             <Routes>

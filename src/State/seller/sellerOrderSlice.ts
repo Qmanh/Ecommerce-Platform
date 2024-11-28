@@ -1,4 +1,4 @@
-import { OrderStatus } from './../../types/OrderTypes';
+import { OrderList, OrderStatus } from './../../types/OrderTypes';
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Order } from "../../types/OrderTypes";
 import { api } from "../../config/Api";
@@ -6,24 +6,38 @@ import { api } from "../../config/Api";
 interface SellerOrderState {
     orders: Order[];
     loading: boolean;
+    orderList:FetchSellerOrdersResponse;
     error: string | null;
+    totalPageNumber: number;
 }
 
 const initialState: SellerOrderState = {
     orders: [],
+    orderList:{orderDTOList:[], totalPageNumber:0},
     loading: false,
     error: null,
+    totalPageNumber:0,
 };
 
-export const fetchSellerOrders = createAsyncThunk<Order[], string>(
+interface FetchSellerOrdersResponse {
+    orderDTOList: Order[]; // Assuming orderDTOList contains an array of Order objects
+    totalPageNumber: number;
+}
+
+export const fetchSellerOrders = createAsyncThunk<FetchSellerOrdersResponse, {jwt:string, params:any}>(
     'sellerOrders/fetchSellerOrders',
-    async (jwt, {rejectWithValue}) =>{
+    async ({jwt,params}, {rejectWithValue}) =>{
         try {
             const response = await api.get('/api/seller/orders', {
-                headers: {Authorization :`Bearer ${jwt}`}
+                headers: {Authorization :`Bearer ${jwt}`},
+                params:{
+                    pageNumber:params.pageNumber
+                }
             })
-            console.log("fetch seller orders ", response.data)
-            return response.data;
+            console.log("fetch seller orders ", response.data.orderDTOList)
+            const { orderDTOList, totalPageNumber } = response.data;
+
+            return { orderDTOList, totalPageNumber };
         } catch (error:any) {
             console.log("error ", error.response);
             return rejectWithValue(error.response.data);
@@ -72,9 +86,9 @@ const sellerOrderSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchSellerOrders.fulfilled, (state, action: PayloadAction<Order[]>)=>{
+            .addCase(fetchSellerOrders.fulfilled, (state, action: PayloadAction<FetchSellerOrdersResponse>)=>{
                 state.loading = false;
-                state.orders = action.payload;
+                state.orderList = action.payload;
             })
             .addCase(fetchSellerOrders.rejected, (state, action)=>{
                 state.loading = false;
