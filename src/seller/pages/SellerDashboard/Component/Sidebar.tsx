@@ -28,6 +28,11 @@ const Sidebar = () => {
         }
     }
 
+    const handleClick =(index:any,direction:any)=>{
+        setSelected(index);
+        navigate(direction);
+    }
+
 
     return (
         <>
@@ -54,7 +59,7 @@ const Sidebar = () => {
                             <div
                                 className={selected === index ? 'menuItem active' : 'menuItem'}
                                 key={index}
-                                onClick={() => setSelected(index)}
+                                onClick={() => handleClick(index,item.path)}
                             >
                                 <item.icon />
                                 <span>
@@ -64,11 +69,6 @@ const Sidebar = () => {
                         )
                     })}
 
-                    <div className='menuItem'>
-                        <IconButton onClick={handleLogout}>
-                            <LogoutOutlined />
-                        </IconButton>
-                    </div>
                 </div>
             </motion.div>
         </>

@@ -1,11 +1,11 @@
 import { AddPhotoAlternate, Close } from '@mui/icons-material'
 import { Button, CircularProgress, FormControl, FormHelperText, Grid2, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { useFormik } from 'formik';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { UploadToCloudinary } from '../../../Utils/UploadToCloudinary';
 import { mainCategory } from '../../../data/category/mainCategory';
 import { useAppDispatch } from '../../../State/Store';
-import { createProduct } from '../../../State/seller/sellerProductSlice';
+import { createProduct, updateProduct } from '../../../State/seller/sellerProductSlice';
 import { colors } from '../../../data/filter/color';
 import { menLevelTwo } from '../../../data/category/level two/menLevelTwo';
 import { womenLevelTwo } from '../../../data/category/level two/womenLevelTwo';
@@ -15,6 +15,9 @@ import { menLevelThree } from '../../../data/category/leve three/menLevelThree';
 import { womenLevelThree } from '../../../data/category/leve three/womenLevelThree';
 import { electronicsLevelThree } from '../../../data/category/leve three/electronicsLevelThree';
 import { furnitureLevelThree } from '../../../data/category/leve three/furnitureLevelThree';
+import { toast } from 'react-toastify';
+import { Navigate } from 'react-router-dom';
+import { isTemplateExpression } from 'typescript';
 const categoryTwo:{[key:string]:any[]} = {
   men:menLevelTwo,
   women:womenLevelTwo,
@@ -28,28 +31,64 @@ const categoryThree:{[key:string]:any[]} ={
   home_furniture: furnitureLevelThree
 }
 
-const AddProduct = () => {
+const AddProduct = ({ onClose, data }: { onClose: any; data: any }) => {
   const [uploadImage, setUploadImage] = useState(false);
   const [snackbar, setSnackbar] = useState(false);
   const dispatch = useAppDispatch();
+  const sizesArray = data.sizes.map((size:any) => size.name);
 
+  console.log("editpr: ",data);
   const formik = useFormik({
     initialValues:{
-      title:"",
-      description:"",
-      mrpPrice:"",
-      sellingPrice:"",
-      quantity:"",
-      color:"",
-      images:[],
-      category:"",
-      category2:"",
-      category3:"",
-      sizes:"",
+      title:data.title,
+      description:data.description,
+      mrpPrice:data.mrpPrice,
+      sellingPrice:data.sellingPrice,
+      quantity:data.quantity,
+      color:data.color,
+      images:data.images,
+      category:data.category.parentCategory.parentCategory.categoryId,
+      category2:data.category.parentCategory.categoryId,
+      category3:data.category.categoryId,
+      sizes:sizesArray,
     }, 
-    onSubmit: (values)=>{
-      console.log("values: ",values)
-      dispatch(createProduct({request:values, jwt:localStorage.getItem("jwt")}))
+    onSubmit: (values, {resetForm})=>{
+      
+      if(data){
+        console.log("values: ",values)
+        dispatch(updateProduct({request:values, jwt:localStorage.getItem("jwt"),id:data.id}))
+        .then(()=>{
+          toast.success('Updated Product Successfully!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+            onClose();
+        })
+      }else{
+        dispatch(createProduct({request:values, jwt:localStorage.getItem("jwt")}))
+        .then(()=>{
+          toast.success('Created Product Successfully!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+  
+            resetForm();
+            onClose();
+        })
+      }
+      
     }
   })
   const handleImageChange = async (event:any)=>{
@@ -60,11 +99,12 @@ const AddProduct = () => {
     formik.setFieldValue("images",[...formik.values.images, image]);
     setUploadImage(false);
   }
-  const handleRemoveImage = (index: number)=>{
-    const updatedImages = [...formik.values.images];
-    updatedImages.slice(index,1);
+
+  const handleRemoveImage = (index: number) => {
+    const updatedImages = [...formik.values.images]
+    updatedImages.splice(index,1);
     formik.setFieldValue("images", updatedImages);
-  }
+}
 
   const childCategory = (category: any, parentCategoryId: any)=>{
     return category.filter((child:any)=>{
@@ -75,6 +115,9 @@ const AddProduct = () => {
   const handleCloseSnackbar = () =>{
     setSnackbar(false);
   }
+  useEffect(()=>{
+    <Navigate to="/seller/products"/>
+  },[localStorage.getItem("jwt")])
 
   return (
     <div>
@@ -100,7 +143,7 @@ const AddProduct = () => {
             </label>
 
             <div className='flex flex-wrap gap-2'>
-              {formik.values.images.map((image, index)=>(
+              {formik.values.images.map((image:any, index:any)=>(
                 <div className='relative'>
                   <img
                     className='w-24 h-24 object-cover'
@@ -134,7 +177,7 @@ const AddProduct = () => {
                 value={formik.values.title}
                 onChange={formik.handleChange}
                 error={formik.touched.title && Boolean(formik.errors.title)}
-                helperText={formik.touched.title && formik.errors.title}
+                //helperText={formik.touched.title && formik.errors.title}
                 required
               />
           </Grid2>
@@ -150,12 +193,12 @@ const AddProduct = () => {
                 value={formik.values.description}
                 onChange={formik.handleChange}
                 error={formik.touched.description && Boolean(formik.errors.description)}
-                helperText={formik.touched.description && formik.errors.description}
+                //helperText={formik.touched.description && formik.errors.description}
                 required
               />
           </Grid2>
 
-          <Grid2 size={{xs:12, md:4, lg:3}}>
+          <Grid2 size={{xs:12, md:4, lg:6}}>
               <TextField
                 fullWidth
                 id="mrpPrice"
@@ -165,12 +208,12 @@ const AddProduct = () => {
                 value={formik.values.mrpPrice}
                 onChange={formik.handleChange}
                 error={formik.touched.mrpPrice && Boolean(formik.errors.mrpPrice)}
-                helperText={formik.touched.mrpPrice && formik.errors.mrpPrice}
+                //helperText={formik.touched.mrpPrice && formik.errors.mrpPrice}
                 required
               />
           </Grid2>
 
-          <Grid2 size={{xs:12, md:4, lg:3}}>
+          <Grid2 size={{xs:12, md:4, lg:6}}>
               <TextField
                 fullWidth
                 id="sellingPrice"
@@ -180,12 +223,27 @@ const AddProduct = () => {
                 value={formik.values.sellingPrice}
                 onChange={formik.handleChange}
                 error={formik.touched.sellingPrice && Boolean(formik.errors.sellingPrice)}
-                helperText={formik.touched.sellingPrice && formik.errors.sellingPrice}
+                //helperText={formik.touched.sellingPrice && formik.errors.sellingPrice}
                 required
               />
           </Grid2>
 
-          <Grid2 size={{xs:12, md:4, lg:3}}>
+          <Grid2 size={{xs:12, md:4, lg:4}}>
+              <TextField
+                fullWidth
+                id="quantity"
+                name="quantity"
+                label="Quantity"
+                type='number'
+                value={formik.values.quantity}
+                onChange={formik.handleChange}
+                error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+                //helperText={formik.touched.quantity && formik.errors.quantity}
+                required
+              />
+          </Grid2>
+
+          <Grid2 size={{xs:12, md:4, lg:4}}>
               <FormControl
                 fullWidth
                 error = {formik.touched.color && Boolean(formik.errors.color)}
@@ -214,14 +272,14 @@ const AddProduct = () => {
                       </div>
                     </MenuItem>)}
                 </Select>
-                {
+                {/* {
                   formik.touched.color && formik.errors.color && (
                     <FormHelperText>{formik.errors.color}</FormHelperText>
-                  )}
+                  )} */}
               </FormControl>
           </Grid2>
 
-          <Grid2 size={{xs:12, md:4, lg:3}}>
+          <Grid2 size={{xs:12, md:4, lg:4}}>
             <FormControl
               fullWidth
               error = {formik.touched.sizes && Boolean(formik.errors.sizes)}
@@ -233,6 +291,7 @@ const AddProduct = () => {
                 id="sizes"
                 name="sizes"
                 value={formik.values.sizes}
+                multiple
                 onChange={formik.handleChange}
                 label="Sizes"
               >
@@ -245,10 +304,10 @@ const AddProduct = () => {
                 <MenuItem value='L'>L</MenuItem>
                 <MenuItem value='XL'>XL</MenuItem>
               </Select>
-              {
+              {/* {
                 formik.touched.sizes && formik.errors.sizes &&(
                   <FormHelperText>{formik.errors.sizes}</FormHelperText>
-                )}
+                )} */}
             </FormControl>
           </Grid2>
 
@@ -274,9 +333,9 @@ const AddProduct = () => {
                 ))
                 }
               </Select>
-              {formik.touched.category && formik.errors.category && (
+              {/* {formik.touched.category && formik.errors.category && (
                 <FormHelperText>{formik.errors.category}</FormHelperText>
-              )}
+              )} */}
             </FormControl>
           </Grid2>
 
@@ -302,9 +361,9 @@ const AddProduct = () => {
                   ))
                 }
               </Select>
-              {formik.touched.category2 && formik.errors.category2 && (
+              {/* {formik.touched.category2 && formik.errors.category2 && (
                 <FormHelperText>{formik.errors.category2}</FormHelperText>
-              )}
+              )} */}
             </FormControl>
           </Grid2>
 
@@ -330,9 +389,9 @@ const AddProduct = () => {
                   <MenuItem value={item.categoryId}>{item.name}</MenuItem>
                 ))}
               </Select>
-              {formik.touched.category && formik.errors.category && (
+              {/* {formik.touched.category && formik.errors.category && (
                 <FormHelperText>{formik.errors.category}</FormHelperText>
-              )}
+              )} */}
             </FormControl>
           </Grid2>
 
@@ -345,8 +404,7 @@ const AddProduct = () => {
               type="submit"
               // disabled={sellerProduct.loading}
             >
-              {false ? <CircularProgress size="small"
-                sx={{ width: "27px", height:"27px"}} />
+              {data ? "Edit Product" 
                 :"Add Product"
               }
             </Button>

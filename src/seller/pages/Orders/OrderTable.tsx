@@ -70,7 +70,7 @@ const OrderTable = () => {
       const currentFillter = { ...newFillter, pageNumber: page };
       dispatch(fetchSellerOrders({jwt, params: currentFillter}))
     },[])
-    console.log("length: ",sellerOrder.orderList.orderDTOList);
+  
 
     return (
       <>

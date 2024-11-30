@@ -69,7 +69,7 @@ const Navbar = () => {
                             <Search/>
                         </IconButton>
                         {
-                           localStorage.getItem("jwt") && !localStorage.getItem("role") ?
+                           localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_CUSTOMER" ?
                             <Button onClick={()=> navigate("/account/orders")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}

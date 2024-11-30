@@ -3,6 +3,7 @@
     --orange: #fca61f;
     --black: #242d49;
     --gray: #788097;
+    --blue: #1e96e6;
     --purple: linear-gradient(180deg, #BB67FF 0%, #C484F3 100%);
     --pink: #FF919D;
     --glass: rgba(255, 255, 255, 0.54);
@@ -20,21 +21,22 @@
       #ffcfd1 51.55%,
       #f3c6f1 90.85%
     );
-    height: 100vh;
+    height: 90vh;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Inter', sans-serif;
+  
   }
   
   .AppGlass {
     display: grid;
     height: 97%;
-    width: 97%;
+    width: 100%;
     background: var(--glass);
     border-radius: 2rem;
     gap: 16px;
-    grid-template-columns: 11rem auto 20rem;
+    grid-template-columns: 11rem auto 18rem;
     overflow: hidden;
   }
   

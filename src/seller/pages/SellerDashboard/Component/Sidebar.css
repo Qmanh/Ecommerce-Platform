@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    padding-top: 4rem;
+    padding-top: 1rem;
     transition: all 300ms ease;
   }
   /* logo */
@@ -34,18 +34,20 @@
     margin-top: 4rem;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 2rem;
   }
   .menuItem {
     display: flex;
     align-items: center;
     gap: 1rem;
-    height: 2.5rem;
+    height: 2rem;
     margin-left: 2rem;
     position: relative;
     transition: all 300ms ease;
     border-radius: 0.7rem;
     font-size: 14px;
+    
   }
   
   .menuItem:hover {
@@ -59,17 +61,9 @@
   }
   
   .active {
-    background: var(--activeItem);
+    background: var(--pink);
     margin-left: 0;
   }
-  .active::before {
-    content: "";
-    width: 8px;
-    height: 100%;
-    background: var(--pink);
-    margin-right: calc(1rem - 8px);
-  }
-  
   
   /* Tablets */
   @media screen and (max-width: 1200px) {

@@ -10,13 +10,10 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className='App'>
-        <div className='AppGlass'>
-            <Sidebar/>
-            <MainDash/>
-            <RightSide/>
-        </div>
+      <div className='MainDash'>
+          <MainDash/>
       </div>
+      
     </>
   )
 }

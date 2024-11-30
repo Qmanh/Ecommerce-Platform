@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,90 +8,156 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
-import { fetchSellerProducts } from '../../../State/seller/sellerProductSlice';
+import { deleteProduct, fetchSellerProducts } from '../../../State/seller/sellerProductSlice';
 import { useSelector } from 'react-redux';
 import { Product } from '../../../types/ProductTypes';
-import { Button, IconButton } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { Box, Button, IconButton, Modal, Pagination } from '@mui/material';
+import { AddOutlined, Delete, Edit } from '@mui/icons-material';
+import './ProductTable.css';
+import { formatCurrency } from '../../../Utils/CustomCurrencyVND';
+import AddProduct from './AddProduct';
+import { toast } from 'react-toastify';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
-
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 800,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 const ProductTable = () => {
-    const dispatch = useAppDispatch()
-    const {sellerProduct} = useAppSelector(store=>store);
+  const dispatch = useAppDispatch()
+  const [open, setOpen] = useState(false);
+  const [dataProduct, setDataProduct] = useState<Product>();
+  const handleClose = () => setOpen(false);
+  const { sellerProduct } = useAppSelector(store => store);
 
-    useEffect(() =>{
-      dispatch(fetchSellerProducts(localStorage.getItem("jwt")))
-    },[])
-    return (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Image</StyledTableCell>
-                <StyledTableCell align="right">Title</StyledTableCell>
-                <StyledTableCell align="right">MRP</StyledTableCell>
-                <StyledTableCell align="right">Selling Price</StyledTableCell>
-                <StyledTableCell align="right">Color</StyledTableCell>
-                <StyledTableCell align="right">Update Stock</StyledTableCell>
-                <StyledTableCell align="right">Update</StyledTableCell>
+  console.log("check sellerProduct: ", dataProduct)
+  const [page, setPage] = useState(0);
+
+  const filter = {
+    pageNumber: page
+  }
+
+  console.log("check pagenumber: ", page)
+  const jwt = localStorage.getItem("jwt") || "";
+  useEffect(() => {
+    const currentFillter = { ...filter, pageNumber: page };
+    dispatch(fetchSellerProducts({ jwt, params: currentFillter }))
+  }, [open])
+
+  const handlePageChange = (value: number) => {
+    setPage(value - 1);
+    const fillter = { pageNumber: value - 1 };
+    dispatch(fetchSellerProducts({ jwt, params: fillter }))
+  }
+
+  const handleClick = (data: any) => {
+    setOpen(true);
+    console.log("chk data: ", data)
+    setDataProduct(data);
+  }
+
+  const handleDelete = (id:any) =>{
+    console.log("id: ",id)
+    dispatch(deleteProduct(id)).then(()=>{
+      toast.success('Deleted Product Successfully!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    })
+  }
+  return (
+    <div className='Table'>
+      <TableContainer component={Paper} style={{ boxShadow: '0px 13px 20px 0px #80808029' }}>
+        <Table sx={{ minWidth: 700 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Image</TableCell>
+              <TableCell align="left">Title</TableCell>
+              <TableCell align="left">MRP</TableCell>
+              <TableCell align="left">Selling Price</TableCell>
+              <TableCell align="left">Color</TableCell>
+              <TableCell align="left">Update Stock</TableCell>
+              <TableCell align="left">Update</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sellerProduct.productList.products.map((item: Product) => (
+              <TableRow key={item.id}>
+                <TableCell component="th" scope="row">
+                  <div className='flex gap-1 flex-wrap'>
+                    {
+                      item.images.map((image) =>
+                        <img className='w-10 h-15 rounded-md' alt='' src={image} />
+                      )
+                    }
+                  </div>
+                </TableCell>
+                <TableCell align="left">{item.title}</TableCell>
+                <TableCell align="left">{formatCurrency(item.mrpPrice)}</TableCell>
+                <TableCell align="left">{formatCurrency(item.sellingPrice)}</TableCell>
+                <TableCell align="left">{item.color}</TableCell>
+                <TableCell align="left">
+                  {
+                    item.quantity > 0 ?
+                    <Button size='small'>
+                      in_stock
+                    </Button>
+                    :
+                    <Button size='small'>
+                      out_of_stock
+                    </Button>
+                  }
+                </TableCell>
+                <TableCell align="left">
+                  
+                    <IconButton className='text-primary-color' size='small'>
+                      <Edit onClick={()=> handleClick(item)} />
+                    </IconButton>
+
+                    <IconButton className='text-primary-color' size='small'>
+                      <Delete sx={{color:'red'}} onClick={()=>handleDelete(item.id)}/>
+                    </IconButton>
+                  
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {sellerProduct.products.map((item:Product) => (
-                <StyledTableRow key={item.id}>
-                  <StyledTableCell component="th" scope="row">
-                    <div className='flex gap-1 flex-wrap'>
-                      {
-                        item.images.map((image)=> 
-                          <img className='w-20 rounded-md' alt='' src={image}/>
-                        )
-                      }  
-                    </div>
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{item.title}</StyledTableCell>
-                  <StyledTableCell align="right">{item.mrpPrice}</StyledTableCell>
-                  <StyledTableCell align="right">{item.sellingPrice}</StyledTableCell>
-                  <StyledTableCell align="right">{item.color}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    {
-                      <Button size='small'>
-                        in_stock
-                      </Button>
-                    }
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {
-                      <IconButton className='text-primary-color' size='small'>
-                        <Edit />
-                      </IconButton>
-                    }
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      );
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <div className='flex justify-center py-10'>
+        <Pagination
+          onChange={(e, value) => handlePageChange(value)}
+          count={sellerProduct.productList.totalPageNumber}
+          variant="outlined"
+          color="primary"
+        />
+      </div>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <AddProduct onClose={handleClose} data={dataProduct} />
+        </Box>
+      </Modal>
+    </div>
+  );
 }
 
 export default ProductTable

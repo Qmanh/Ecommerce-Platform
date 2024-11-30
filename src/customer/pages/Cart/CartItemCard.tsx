@@ -39,7 +39,8 @@ const CartItemCard = ({item}:{item:CartItem}) => {
                 <p className='text-gray-600 font-medium text-sm'>{item.product.title}</p>
                 <p className='text-gray-400 text-xs'><strong>Sold by: </strong> Degrey Fashion Limited</p>
                 <p className='text-sm'>7 days replacement available</p>
-                <p className='text-sm text-gray-500'><strong>quantity : </strong> {item.quantity} </p>
+                <p className='text-sm text-gray-500'><strong>size : </strong> {item.size} </p>
+                <p className='text-sm text-gray-500'><strong>Quantity : </strong> {item.quantity} </p>
             </div>
         </div>
         <Divider/>

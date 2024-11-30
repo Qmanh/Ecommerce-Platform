@@ -38,9 +38,10 @@ export const fetchUserCart = createAsyncThunk<Cart, string>(
 );
 
 export interface AddItemRequest{
-    productId: number | undefined;
+    productId: number | undefined,
     size: string | undefined,
-    quantity: number | undefined;
+    quantity: number | undefined,
+    // color: string | undefined,
 }
 
 export const addItemToCart = createAsyncThunk<CartItem, 

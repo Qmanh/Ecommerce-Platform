@@ -66,7 +66,7 @@ const HomeCategoryForm = ({data}: {data:any}) => {
 
     const handleRemoveImage = () => {
         const updatedImages = [...formik.values.image]
-        updatedImages.slice(0, 0);
+        updatedImages.splice(0, 0);
         formik.setFieldValue("image", updatedImages);
         setHaveImage(false);
     }

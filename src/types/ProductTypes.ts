@@ -1,7 +1,7 @@
 import { discount } from './../data/filter/discount';
 import { Seller } from './SellerType';
 export interface Product{
-    id?:number,
+    id:number,
     title: string,
     description: string,
     mrpPrice: number,
@@ -14,9 +14,13 @@ export interface Product{
     category?:Category,
     seller?: Seller,
     createdAt?: Date,
-    sizes:string
+    sizes:sizes[],
 }
-
+interface sizes{
+    id:number,
+    description: string,
+    name: string,
+}
 interface Category{
     id?: number;
     name: string;

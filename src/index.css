@@ -1,17 +1,42 @@
-
-.logo{
+.logo {
   font-family: "Pacifico", cursive;
   font-weight: 400;
   font-style: normal;
-  color: #3498DB;
+  color: #3498db;
 }
 
 .custom-shadow {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*This cause the division content
+              to be displayed from right to left */
+.Flipped {
+  direction: ltr;
+}
+
+/* Designing for scroll-bar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

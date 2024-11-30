@@ -6,7 +6,10 @@ module.exports = {
       colors:{
         "primary-color":"#3498DB",
         "secondary-color":"#EAF0F1"
-      }
+      },
+      overflow: {
+        ellipsis: 'hidden overflow-ellipsis'
+      },
     },
   },
   plugins: [],
