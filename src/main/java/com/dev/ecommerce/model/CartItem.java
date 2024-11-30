@@ -31,4 +31,6 @@ public class CartItem extends abstractEntity {
     private Integer sellingPrice;
 
     private Long userId;
+
+    private String color;
 }

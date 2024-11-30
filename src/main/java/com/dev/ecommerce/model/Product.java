@@ -1,5 +1,6 @@
 package com.dev.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,10 +41,14 @@ public class Product extends abstractEntity{
     @ManyToOne
     private Category category;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<CartItem> cartItems = new ArrayList<>();
+
     @ManyToOne
     private Seller seller;
 
-    @OneToMany
+    @ManyToMany
     private Set<Size> sizes = new HashSet<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)

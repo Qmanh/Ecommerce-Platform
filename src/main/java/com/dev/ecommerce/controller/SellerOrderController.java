@@ -33,7 +33,6 @@ public class SellerOrderController {
         OrdersResponse ordersResponse = new OrdersResponse();
         ordersResponse.setOrderDTOList(orders);
         ordersResponse.setTotalPageNumber(orderService.getTotalPageNumber(seller.getId()));
-        log.info("pageNumber: {}",pageNumber);
         return new ResponseEntity<>(ordersResponse, HttpStatus.ACCEPTED);
     }
 

@@ -1,12 +1,13 @@
 package com.dev.ecommerce.service.impl;
 
 import com.dev.ecommerce.dto.request.CreateProductRequest;
+import com.dev.ecommerce.dto.request.UpdateProductRequest;
 import com.dev.ecommerce.exceptions.ProductException;
 import com.dev.ecommerce.model.Category;
 import com.dev.ecommerce.model.Product;
 import com.dev.ecommerce.model.Seller;
-import com.dev.ecommerce.repository.CategoryRepository;
-import com.dev.ecommerce.repository.ProductRepository;
+import com.dev.ecommerce.model.Size;
+import com.dev.ecommerce.repository.*;
 import com.dev.ecommerce.service.ProductService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -20,7 +21,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,10 +34,20 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final SizeRepository sizeRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public Product createProduct(CreateProductRequest request, Seller seller) {
         Category category1 = categoryRepository.findByCategoryId(request.getCategory());
+        Set<Size> listSize = new HashSet<>();
+        listSize.addAll(
+                request.getSizes().stream()
+                        .map(sizeName -> sizeRepository.findByName(sizeName))
+                        .filter(size -> size != null) // Filter out null sizes if not found
+                        .collect(Collectors.toSet())
+        );
         if(category1 == null){
             Category category = new Category();
             category.setCategoryId(request.getCategory());
@@ -67,10 +81,11 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(request.getDescription());
         product.setTitle(request.getTitle());
         product.setColor(request.getColor());
+        product.setQuantity(request.getQuantity());
         product.setSellingPrice(request.getSellingPrice());
         product.setImages(request.getImages());
         product.setMrpPrice(request.getMrpPrice());
-        product.setSizes(request.getSizes());
+        product.setSizes(listSize);
         product.setDiscountPercent(discountPercentage);
 
         return productRepository.save(product);
@@ -90,16 +105,44 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long productId) throws ProductException {
         Product product = findProductById(productId);
-        productRepository.delete(product);
+        if(orderItemRepository.findOrderItemByProduct(product)!=null){
+            orderItemRepository.deleteOrderItemsByProductId(productId);
+        }
+        if(cartItemRepository.findCartItemByProduct(product)!=null){
+            cartItemRepository.deleteCartItemByProduct(product);
+        }
+        productRepository.deleteById(productId);
 
     }
 
     @Override
-    public Product updateProduct(Long productId, Product product) throws ProductException {
-        findProductById(productId);
-        product.setId(productId);
+    public Product updateProduct(Long productId, UpdateProductRequest request) throws ProductException {
 
-        return productRepository.save(product);
+        Product productExisting = findProductById(productId);
+        Set<Size> listSize = new HashSet<>();
+        listSize.addAll(
+                request.getSizes().stream()
+                        .map(sizeName -> sizeRepository.findByName(sizeName))
+                        .filter(size -> size != null) // Filter out null sizes if not found
+                        .collect(Collectors.toSet())
+        );
+
+        Category category = categoryRepository.findByCategoryId(request.getCategory3());
+        int discountPercentage = calculateDiscountPercentage(request.getMrpPrice(),request.getSellingPrice());
+
+        productExisting.setColor(request.getColor());
+        productExisting.setImages(request.getImages());
+        productExisting.setSizes(listSize);
+        productExisting.setTitle(request.getTitle());
+        productExisting.setCategory(category);
+        productExisting.setDescription(request.getDescription());
+        productExisting.setQuantity(request.getQuantity());
+        productExisting.setDiscountPercent(discountPercentage);
+        productExisting.setMrpPrice(request.getMrpPrice());
+        productExisting.setSellingPrice(request.getSellingPrice());
+        productExisting.setSeller(productExisting.getSeller());
+
+        return productRepository.save(productExisting);
     }
 
     @Override
@@ -169,14 +212,27 @@ public class ProductServiceImpl implements ProductService {
                         Sort.unsorted());
             };
         }else{
-            pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 10, Sort.unsorted());
+            pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 10, Sort.by("createdAt"));
         }
         return productRepository.findAll(specification,pageable);
     }
 
     @Override
-    public List<Product> getProductBySellerId(Long sellerId) {
+    public Integer getTotalPageNumber() {
 
-        return productRepository.findBySellerId(sellerId);
+        Integer itemsPerPage = 5;
+        Integer totalItems = productRepository.findAll().size();
+        Integer totalPageNumber = totalItems / itemsPerPage;
+        if (totalItems % itemsPerPage != 0) {
+            totalPageNumber++;
+        }
+        return totalPageNumber;
+    }
+
+    @Override
+    public List<Product> getProductBySellerId(Long sellerId, Integer pageNumber) {
+
+        Pageable pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 5, Sort.by("createdAt"));
+        return productRepository.findBySellerId(sellerId,pageable);
     }
 }

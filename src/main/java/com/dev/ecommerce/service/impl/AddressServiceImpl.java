@@ -16,8 +16,7 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 
     private final UserRepository userRepository;
-    private final AddressRepository addressRepository;
-    private final OrderRepository orderRepository;
+
 
     @Override
     public List<Address> findAddressByUserId(Long userId) {

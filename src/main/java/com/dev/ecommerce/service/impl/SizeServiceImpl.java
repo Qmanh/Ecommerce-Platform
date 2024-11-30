@@ -8,8 +8,11 @@ import com.dev.ecommerce.service.SizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+
 public class SizeServiceImpl implements SizeService {
     private final SizeRepository sizeRepository;
 
@@ -20,10 +23,16 @@ public class SizeServiceImpl implements SizeService {
             Size newSize = new Size();
             newSize.setName(request.getName());
             newSize.setDescription(request.getDescription());
-
-            sizeRepository.save(newSize);
+            return sizeRepository.save(newSize);
+        }else{
+            throw new ProductException("Size already exist...");
         }
-        throw new ProductException("Size already exist...");
+
+    }
+
+    @Override
+    public List<Size> getAllSize() {
+        return sizeRepository.findAll();
     }
 
     @Override
