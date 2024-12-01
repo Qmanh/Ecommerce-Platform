@@ -59,6 +59,22 @@ export const fetchUserProfile = createAsyncThunk<any, any>("/auth/fetchUserProfi
     }
 )
 
+export const deleteAddress = createAsyncThunk<any,
+    { id:number; jwt: string }
+>("orders/createOrder", async ({ id, jwt }, { rejectWithValue }) => {
+    try {
+        const response = await api.delete(`/api/users/address/${id}`, {
+            headers: { Authorization: `Bearer ${jwt}` },
+
+        });
+        console.log("delete address ", response.data);
+        return response.data;
+    } catch (error: any) {
+        console.log("error ", error.response);
+        return rejectWithValue("Failed to create order");
+    }
+});
+
 export const fetchUserAddress = createAsyncThunk<any, any>("/auth/fetchUserAddress",
     async(jwt, {rejectWithValue}) => {
         try {

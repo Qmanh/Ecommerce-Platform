@@ -7,18 +7,37 @@ import PricingCard from './PricingCard'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../State/Store'
 import { fetchUserCart } from '../../../State/customer/CartSlice'
+import { applyCoupon } from '../../../State/customer/CouponSlice'
 
 const Cart = () => {
 
     const [couponCode, setCouponCode] = useState("");
+    const [apply, setApply] = useState(false);
     const navigate = useNavigate();
+    const {cart} = useAppSelector(store => store)
 
     const handleChange=(e:any)=>{
         setCouponCode(e.target.value)
     };
-    
+    const totalSell = cart.cart?.totalSellingPrice;
+    const jwt = localStorage.getItem("jwt")||""
     const dispatch =useAppDispatch();
-    const {cart} = useAppSelector(store => store)
+    
+
+    const handleApplyCoupon=()=>{
+        setApply(true);
+        dispatch(applyCoupon({apply:"true",code:couponCode,orderValue:Number(totalSell),jwt})).then(()=>{
+            dispatch(fetchUserCart(localStorage.getItem("jwt") || ""))
+        })
+    }
+
+    const handleRemoveCoupon=()=>{
+        setCouponCode("")
+        setApply(false);
+        dispatch(applyCoupon({apply:"false",code:couponCode,orderValue:Number(totalSell),jwt})).then(()=>{
+            dispatch(fetchUserCart(localStorage.getItem("jwt") || ""))
+        })
+    }
 
     useEffect(()=>{
         dispatch(fetchUserCart(localStorage.getItem("jwt") || ""))
@@ -41,22 +60,23 @@ const Cart = () => {
                         <span>Apply Coupons</span>
                     </div>
                     {
-                        true ? 
+                        !apply ? 
                         <div className='flex justify-between items-center'>
                             <TextField
                             onChange={handleChange}
+                            value={couponCode}
                             id="outlined-basic" 
                             placeholder='coupon code'
                             size="small"
                             variant="outlined" />
-                            <Button size='medium'>
+                            <Button size='medium' onClick={handleApplyCoupon}>
                                 Apply
                             </Button>
                         </div> :
                         <div className='flex'>
                             <div className='p-1 pl-5 pr-3 border rounded-md flex gap-2 items-center'>
-                                <span className=''>SLP30 Applied</span>
-                                <IconButton size='small'>
+                                <span className=''>{couponCode} Applied</span>
+                                <IconButton size='small' onClick={handleRemoveCoupon}>
                                     <Close className='text-red-600'/>
                                 </IconButton>
                             </div>

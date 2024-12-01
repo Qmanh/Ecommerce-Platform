@@ -1,3 +1,4 @@
+import { OrderStatus } from './../../types/OrderTypes';
 
 import { PayloadAction } from './../../../node_modules/@reduxjs/toolkit/src/createAction';
 import { Address } from './../../types/userTypes';
@@ -14,7 +15,8 @@ const initialState: OrderState = {
     paymentOrder: null,
     loading: false,
     error: null,
-    orderCanceled: false
+    orderCanceled: false,
+    orderStatus:null,
 };
 
 const API_URL = "/api/orders";
@@ -53,7 +55,7 @@ export const fetchOrderById = createAsyncThunk<Order,
 });
 
 export const createOrder = createAsyncThunk<any,
-    {address: Address; jwt: string, paymentGateway: string}
+    {address: any; jwt: string, paymentGateway: string}
 >("orders/createOrder", async({address, jwt, paymentGateway}, {rejectWithValue})=>{
     try {
         const response = await api.post(API_URL, address,{

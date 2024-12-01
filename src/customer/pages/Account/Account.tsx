@@ -7,7 +7,7 @@ import OrderDetails from './OrderDetails'
 import UserDetails from './UserDetails'
 import Address from './Address'
 import { useAppDispatch} from '../../../State/Store'
-import {  logout } from '../../../State/AuthSlice'
+import {  fetchUserProfile, logout } from '../../../State/AuthSlice'
 
 const menu = [
     {name: "orders", path:"/account/orders"},
@@ -31,6 +31,9 @@ const Account = () => {
     };
     const location = useLocation();
 
+    useEffect(()=>{
+        dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+    },[localStorage.getItem("jwt")])
 
   return (
     <div className='px-5 lg:px-52 min-h-screen mt-10'>

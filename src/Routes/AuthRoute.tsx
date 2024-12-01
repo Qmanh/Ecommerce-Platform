@@ -12,8 +12,8 @@ const AuthRoute = ({data}:{data:any}) => {
     
     if(localStorage.getItem("role")==="ROLE_ADMIN" || data.user?.role=="ROLE_ADMIN"){
         return <Outlet/>
-    }else if(data.user?.role=="ROLE_CUSTOMER" && localStorage.getItem("role")==="ROLE_CUSTOMER"){
-        return <Outlet/>
+    }else if(data.user?.role=="ROLE_CUSTOMER" || localStorage.getItem("role")==="ROLE_CUSTOMER"){
+        return <Account/>
     }
     return <Navigate to="/" />
    

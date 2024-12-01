@@ -4,6 +4,8 @@ import React from 'react'
 import * as Yup from "yup"
 import { useAppDispatch } from '../../../State/Store'
 import { createOrder } from '../../../State/customer/OrderSlice'
+import { createAddress } from '../../../State/customer/AddressSlice'
+import { fetchUserCart } from '../../../State/customer/CartSlice'
 
 const AddressFormSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -15,8 +17,9 @@ const AddressFormSchema = Yup.object().shape({
     locality: Yup.string().required("Locality is required"),
 })
 
-const AddressForm = ({paymentGateway}:any) => {
+const AddressForm = ({paymentGateway}:any,{onClose}:any) => {
     const dispatch = useAppDispatch();
+    const jwt = localStorage.getItem("jwt")||"";
     const formik = useFormik({
         initialValues:{
             name:'',
@@ -31,10 +34,11 @@ const AddressForm = ({paymentGateway}:any) => {
         onSubmit: (values) =>{
             console.log(values);
             console.log("method ",paymentGateway);
-            dispatch(createOrder({address:values,
-                jwt:localStorage.getItem("jwt") || "",
-                paymentGateway
-            }))
+            dispatch(createAddress({address:values,jwt})).then(()=>{
+                dispatch(fetchUserCart(localStorage.getItem("jwt") || ""))
+            })
+            
+            onClose();
         },
     })
   return (

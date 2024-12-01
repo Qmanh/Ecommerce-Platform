@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../../State/Store'
 import { deleteCartItem, updateCartItem } from '../../../State/customer/CartSlice'
 import { formatCurrency } from '../../../Utils/CustomCurrencyVND'
 
-const CartItemCard = ({item}:{item:CartItem}) => {
+const CartItemCard = ({item}:{item:any}) => {
 
     const dispatch = useAppDispatch();
 

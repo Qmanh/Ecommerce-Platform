@@ -1,24 +1,31 @@
 import { CheckCircle, FiberManualRecord } from '@mui/icons-material';
-import { Box } from '@mui/material';
+import { Box, imageListItemBarClasses } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 
 const steps = [
-    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED" },
-    { name: "Packed", description: "Item packed in dispatch Warehouse", value: "CONFIRM" },
-    { name: "Shipped", description: "by Mon, 15 Jul", value: "SHIPPED" },
-    { name: "Arriving", description: "by 16 Jul - 18 Jul", value: "ARRIVING" },
-    { name: "Arrived", description: "by 16 Jul - 18 Jul", value: "DELIVERED" }
+    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED", number:0 },
+    { name: "Packed", description: "Item packed in dispatch Warehouse", value: "CONFIRM" , number:1},
+    { name: "Shipped", description: "by Mon, 15 Jul", value: "SHIPPED", number:2 },
+    { name: "Arriving", description: "by 16 Jul - 18 Jul", value: "ARRIVING" , number:3},
+    { name: "Arrived", description: "by 16 Jul - 18 Jul", value: "DELIVERED" , number:4}
 ];
 
 const canceledStep = [
-    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED" },
-    { name: "Order Cancelled", description: "on Thu, 11 Jul", value: "CANCELLED" }
+    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED", number:5 },
+    { name: "Order Cancelled", description: "on Thu, 11 Jul", value: "CANCELLED",number:6 }
 ]
 
-const currentStep = 2;
+
 const OrderStepper = ({ orderStatus }: any) => {
 
-    const [statusStep, setStatusStep] = useState(steps);
+const getOrderStatusNumber = (orderStatus:any) => {
+    const step = steps.find(step => step.value === orderStatus);
+    return step ? step.number : null; 
+};
+
+const currentStep = getOrderStatusNumber({orderStatus});
+
+const [statusStep, setStatusStep] = useState(steps);
 
     useEffect(() => {
         if (orderStatus === 'CANCELLED') {
@@ -36,7 +43,7 @@ const OrderStepper = ({ orderStatus }: any) => {
                             <Box
                                 sx={{ zIndex: -1 }}
                                 className={` w-8 h-8 rounded-full flex items-center 
-                                justify-center z-10 ${index <= currentStep
+                                justify-center z-10 ${index <= Number(currentStep)
                                         ? "bg-gray-200 text-blue-500"
                                         : "bg-gray-300 text-gray-600"
                                     }    
@@ -50,7 +57,7 @@ const OrderStepper = ({ orderStatus }: any) => {
                                 }
                             </Box>
                             {statusStep.length - 1 != index && (
-                                <div className={`border h-20 w-[2px] ${index < currentStep
+                                <div className={`border h-20 w-[2px] ${index < Number(currentStep)
                                     ? "bg-primary-color" : "bg-gray-300 text-gray-600"
                                     }`}>
                                 </div>

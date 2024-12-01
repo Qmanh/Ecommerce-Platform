@@ -22,13 +22,13 @@ const Navbar = () => {
     const {auth, seller} = useAppSelector(store=>store)
 
     useEffect(()=>{
-        if(localStorage.getItem("role")=="ROLE_SELLER"){
+        if(localStorage.getItem("role")==="ROLE_SELLER"){
             dispatch(fetchSellerProfile(jwt))
         }
-        if(jwt && localStorage.getItem("role")!="ROLE_SELLER"){
-            dispatch(fetchUserProfile(jwt))
-            dispatch(fetchUserAddress(jwt))
-        }
+    
+        dispatch(fetchUserProfile(jwt))
+        dispatch(fetchUserAddress(jwt))
+        
         
     },[jwt])
     return (
@@ -69,7 +69,7 @@ const Navbar = () => {
                             <Search/>
                         </IconButton>
                         {
-                           localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_CUSTOMER" ?
+                           localStorage.getItem("role")=="ROLE_CUSTOMER" ?
                             <Button onClick={()=> navigate("/account/orders")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}
@@ -81,7 +81,7 @@ const Navbar = () => {
                                
                             </Button> 
                             :
-                            localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_SELLER"?
+                            localStorage.getItem("role")==="ROLE_SELLER"?
                             <Button onClick={()=> navigate("/seller")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}
@@ -93,7 +93,7 @@ const Navbar = () => {
                                
                             </Button> 
                             :
-                            localStorage.getItem("jwt") && localStorage.getItem("role")==="ROLE_ADMIN" ?
+                            localStorage.getItem("role")==="ROLE_ADMIN" ?
                             <Button onClick={()=> navigate("/admin")} className="flex items-center gap-2">
                                 <Avatar
                                 sx={{width:29, height:29}}

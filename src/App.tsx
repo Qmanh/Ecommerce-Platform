@@ -12,6 +12,7 @@ import { HomeCategories } from './data/HomeCategories';
 import AppRoutes from './Routes/AppRoutes';
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { fetchUserAddress, fetchUserProfile } from './State/AuthSlice';
 
 
 
@@ -27,8 +28,8 @@ function App() {
   },[seller.profile])
 
   useEffect(()=>{
-    // dispatch(fetchUserProfile(localStorage.getItem("jwt")))
-    // dispatch(fetchUserAddress(localStorage.getItem("jwt")))
+    dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+    dispatch(fetchUserAddress(localStorage.getItem("jwt")))
     dispatch(createHomeCategories(HomeCategories))
   },[localStorage.getItem("jwt")])
 

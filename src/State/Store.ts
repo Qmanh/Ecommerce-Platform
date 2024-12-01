@@ -14,6 +14,8 @@ import homeCategorySlice from "./admin/adminSlice"
 import homeSlice from "./customer/CustomerSlice"
 import dealSlice from "./admin/dealSlice"
 import adminCouponSlice from "./admin/adminCouponSlice"
+import addressSlice from "./customer/AddressSlice"
+import couponSlice from "./customer/CouponSlice"
 
 const rootReducer = combineReducers({
     seller:sellerSlice,
@@ -24,6 +26,8 @@ const rootReducer = combineReducers({
     order: OrderSlice,
     wishlist: WishlistSlice,
     customer:homeSlice,
+    address: addressSlice,
+    coupon: couponSlice,
     
     //seller slice
     sellerOrder: sellerOrderSlice, 

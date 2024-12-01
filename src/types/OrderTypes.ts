@@ -1,3 +1,4 @@
+
 import { Product } from "./ProductTypes";
 import { Address, User } from "./userTypes";
 
@@ -9,6 +10,7 @@ export interface OrderState {
     loading: boolean;
     error: string | null;
     orderCanceled: boolean;
+    orderStatus:string | null;
 }
 
 export interface Order {
@@ -35,6 +37,8 @@ export interface OrderList {
 
 export enum OrderStatus {
     PENDING = 'PENDING',
+    PLACED = 'PLACED',
+    CONFIRMED = 'CONFIRMED',
     SHIPPED = 'SHIPPED',
     DELIVERED = 'DELIVERED',
     CANCELLED = 'CANCELLED'
