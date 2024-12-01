@@ -6,12 +6,14 @@ import com.dev.ecommerce.service.CartService;
 import com.dev.ecommerce.service.CouponService;
 import com.dev.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/coupons")
+@Slf4j
 public class CouponController {
 
     private final CouponService couponService;
@@ -23,6 +25,8 @@ public class CouponController {
                                             @RequestParam String code,
                                             @RequestParam double orderValue,
                                             @RequestHeader("Authorization")String jwt) throws Exception {
+       log.info("orderValue:{}",orderValue);
+
         User user = userService.findUserByJwtToken(jwt);
         Cart cart ;
 

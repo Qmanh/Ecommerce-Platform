@@ -1,11 +1,9 @@
 package com.dev.ecommerce.service.impl;
 
-import com.dev.ecommerce.model.Cart;
-import com.dev.ecommerce.model.CartItem;
-import com.dev.ecommerce.model.Product;
-import com.dev.ecommerce.model.User;
+import com.dev.ecommerce.model.*;
 import com.dev.ecommerce.repository.CartItemRepository;
 import com.dev.ecommerce.repository.CartRepository;
+import com.dev.ecommerce.repository.CouponRepository;
 import com.dev.ecommerce.repository.UserRepository;
 import com.dev.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final CouponRepository couponRepository;
 
     @Override
     public CartItem addCartItem(User user, Product product, String size, int quantity) {
@@ -67,6 +66,7 @@ public class CartServiceImpl implements CartService {
     public Cart findUserCart(User user) {
 
         Cart cart = cartRepository.findByUserId(user.getId());
+
         int totalPrice = 0;
         int totalDiscountedPrice = 0;
         int totalItem = 0;
@@ -78,9 +78,13 @@ public class CartServiceImpl implements CartService {
         }
 
         cart.setTotalMrpPrice(totalPrice);
-        cart.setTotalItem(totalItem);
-        cart.setTotalSellingPrice(totalDiscountedPrice);
-        cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
+        cart.setTotalSellingPrice(totalPrice - totalPrice*calculateDiscountPercentage(totalPrice, totalDiscountedPrice)/100);
+        if(cart.getCouponCode()!=null){
+            Coupon coupon =couponRepository.findByCode(cart.getCouponCode());
+            cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice)+coupon.getDiscountPercentage());
+        }else{
+            cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
+        }
 
         return cart;
     }

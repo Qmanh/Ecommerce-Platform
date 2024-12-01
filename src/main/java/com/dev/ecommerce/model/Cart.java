@@ -25,7 +25,7 @@ public class Cart extends abstractEntity<Long>{
     private double totalSellingPrice;
     private int totalItem;
     private int totalMrpPrice;
-    private int discount;
+    private double discount;
     private String couponCode;
 
 }

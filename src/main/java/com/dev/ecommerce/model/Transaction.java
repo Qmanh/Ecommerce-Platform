@@ -1,6 +1,7 @@
 package com.dev.ecommerce.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class Transaction extends  abstractEntity {
     @ManyToOne
     private User customer;
 
-    @OneToOne
+    @ManyToOne
     private Order order;
 
     @ManyToOne

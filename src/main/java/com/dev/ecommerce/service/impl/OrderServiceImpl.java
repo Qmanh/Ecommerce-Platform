@@ -33,10 +33,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Set<Order> createOrder(User user, Address shippingAddress, Cart cart) {
-        if(!user.getAddresses().contains(shippingAddress)){
-            user.getAddresses().add(shippingAddress);
-        }
-        Address address = addressRepository.save(shippingAddress);
 
         Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
                 .collect(Collectors.groupingBy(item -> item.getProduct()
@@ -58,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
             createOrder.setTotalMrpPrice(totalOrderPrice);
             createOrder.setTotalSellingPrice(totalOrderPrice);
             createOrder.setTotalItem(totalItem);
-            createOrder.setShippingAddress(address);
+            createOrder.setShippingAddress(shippingAddress);
             createOrder.setOrderStatus(OrderStatus.PENDING);
             createOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
 
@@ -81,6 +77,8 @@ public class OrderServiceImpl implements OrderService {
                 OrderItem saveOrderItem = orderItemRepository.save(orderItem);
                 orderItems.add(saveOrderItem);
             }
+
+            cart.getCartItems().removeAll(items);
         }
         return orders;
     }

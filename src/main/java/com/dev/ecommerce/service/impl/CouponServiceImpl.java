@@ -1,8 +1,8 @@
 package com.dev.ecommerce.service.impl;
 
-import com.dev.ecommerce.model.Cart;
-import com.dev.ecommerce.model.Coupon;
-import com.dev.ecommerce.model.User;
+import com.dev.ecommerce.domain.OrderStatus;
+import com.dev.ecommerce.domain.PaymentStatus;
+import com.dev.ecommerce.model.*;
 import com.dev.ecommerce.repository.CartRepository;
 import com.dev.ecommerce.repository.CouponRepository;
 import com.dev.ecommerce.repository.UserRepository;
@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,31 @@ public class CouponServiceImpl implements CouponService {
         Coupon coupon = couponRepository.findByCode(couponCode);
 
         Cart cart = cartRepository.findByUserId(user.getId());
+
+        Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
+                .collect(Collectors.groupingBy(item -> item.getProduct()
+                        .getSeller().getId()));
+
+        for(Map.Entry<Long, List<CartItem>>entry:itemsBySeller.entrySet()){
+            List<CartItem> items = entry.getValue();
+            int totalOrderPrice = items.stream().mapToInt(
+                    CartItem::getSellingPrice
+            ).sum();
+
+            int totalMrpPrice = items.stream().mapToInt(
+                    CartItem::getMrpPrice
+            ).sum();
+
+            int totalItem = items.stream().mapToInt(CartItem::getQuantity).sum();
+
+            double discountPrice = (totalOrderPrice * coupon.getDiscountPercentage()) /100;
+            log.info("discountPrice :{}",totalOrderPrice);
+            cart.setTotalSellingPrice(totalOrderPrice - discountPrice);
+            cart.setTotalMrpPrice(totalMrpPrice);
+            cart.setTotalItem(totalItem);
+            cart.setCouponCode(couponCode);
+        }
+
         if(coupon == null){
             throw new Exception("Coupon not valid...");
         }
@@ -46,10 +72,6 @@ public class CouponServiceImpl implements CouponService {
         ){
             user.getUsedCoupons().add(coupon);
             userRepository.save(user);
-
-            double discountPrice = (cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) /100;
-            cart.setTotalSellingPrice(cart.getTotalSellingPrice() - discountPrice);
-            cart.setCouponCode(couponCode);
             cartRepository.save(cart);
             return cart;
         }

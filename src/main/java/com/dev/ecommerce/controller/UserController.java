@@ -39,4 +39,11 @@ public class UserController {
 
     }
 
+    @DeleteMapping("/users/address/{id}")
+    public ResponseEntity<User> deleteAddressUser (@PathVariable("id")Long id, @RequestHeader("Authorization")String jwt) throws Exception {
+        User user = userService.deleteAddress(id,jwt);
+
+        return ResponseEntity.ok(user);
+    }
+
 }

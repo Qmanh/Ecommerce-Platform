@@ -33,7 +33,7 @@ public class CartController {
     public ResponseEntity<Cart> findUserCartHandler(@RequestHeader("Authorization")String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = cartService.findUserCart(user);
-        log.info("cart - "+cart.getUser().getEmail());
+        log.info("cart: {}",cart.getTotalSellingPrice());
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 

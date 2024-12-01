@@ -1,8 +1,10 @@
 package com.dev.ecommerce.service.impl;
 
+import com.dev.ecommerce.model.Cart;
 import com.dev.ecommerce.model.CartItem;
 import com.dev.ecommerce.model.User;
 import com.dev.ecommerce.repository.CartItemRepository;
+import com.dev.ecommerce.repository.CartRepository;
 import com.dev.ecommerce.service.CartItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public CartItem updateCartItem(Long userId, Long cartItemId, CartItem cartItem) throws Exception {
@@ -22,7 +25,7 @@ public class CartItemServiceImpl implements CartItemService {
         User cartItemUser = item.getCart().getUser();
         if(cartItemUser.getId().equals(userId)){
             item.setQuantity(cartItem.getQuantity());
-            item.setSize(cartItem.getSize());
+            item.setSize(item.getSize());
             item.setMrpPrice(item.getQuantity() * item.getProduct().getMrpPrice());
             item.setSellingPrice(item.getQuantity() * item.getProduct().getSellingPrice());
             return cartItemRepository.save(item);
