@@ -3,6 +3,7 @@ package com.dev.ecommerce.controller;
 
 import com.dev.ecommerce.dto.request.CreateReviewRequest;
 import com.dev.ecommerce.dto.response.ApiResponse;
+import com.dev.ecommerce.dto.response.ReviewResponse;
 import com.dev.ecommerce.model.Product;
 import com.dev.ecommerce.model.Review;
 import com.dev.ecommerce.model.User;
@@ -26,9 +27,15 @@ public class ReviewController {
     private final ProductService productService;
 
     @GetMapping("/products/{productId}/reviews")
-    public ResponseEntity<List<Review>> getReviewsByProductId(@PathVariable("productId")Long productId){
-            List<Review> reviews = reviewService.getReviewByProductId(productId);
-            return ResponseEntity.ok(reviews);
+    public ResponseEntity<ReviewResponse> getReviewsByProductId(@PathVariable("productId")Long productId,
+                                                                      @RequestParam (defaultValue = "0") Integer pageNumber){
+            List<Review> reviews = reviewService.getReviewByProductId(productId,pageNumber);
+            Integer totalPageNumber = reviewService.getAllTotalReviewsByProductId(productId);
+
+            ReviewResponse reviewResponse = new ReviewResponse();
+            reviewResponse.setReviews(reviews);
+            reviewResponse.setTotalPageNumber(totalPageNumber);
+            return ResponseEntity.ok(reviewResponse);
     }
 
     @PostMapping("/products/{productId}/reviews")

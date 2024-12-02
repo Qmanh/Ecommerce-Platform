@@ -78,12 +78,14 @@ public class CartServiceImpl implements CartService {
         }
 
         cart.setTotalMrpPrice(totalPrice);
-        cart.setTotalSellingPrice(totalPrice - totalPrice*calculateDiscountPercentage(totalPrice, totalDiscountedPrice)/100);
+
         if(cart.getCouponCode()!=null){
             Coupon coupon =couponRepository.findByCode(cart.getCouponCode());
             cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice)+coupon.getDiscountPercentage());
+            cart.setTotalSellingPrice(cart.getTotalSellingPrice());
         }else{
             cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
+            cart.setTotalSellingPrice(totalPrice - totalPrice*calculateDiscountPercentage(totalPrice, totalDiscountedPrice)/100);
         }
 
         return cart;

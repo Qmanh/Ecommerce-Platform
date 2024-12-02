@@ -79,6 +79,11 @@ public class OrderServiceImpl implements OrderService {
             }
 
             cart.getCartItems().removeAll(items);
+            cart.setDiscount(0);
+            cart.setCouponCode(null);
+            cart.setTotalItem(0);
+            cart.setTotalSellingPrice(0);
+            cart.setTotalMrpPrice(0);
         }
         return orders;
     }
@@ -140,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
     public Order cancelOrder(Long orderId, User user) throws Exception {
         Order order = findOrderById(orderId);
 
-        if(user.getId().equals(order.getUser().getId())){
+        if(!user.getId().equals(order.getUser().getId())){
             throw new Exception("You don't have access to this order");
         }
         order.setOrderStatus(OrderStatus.CANCELLED);

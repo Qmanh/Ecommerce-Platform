@@ -8,6 +8,9 @@ import com.dev.ecommerce.repository.ReviewRepository;
 import com.dev.ecommerce.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +36,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getReviewByProductId(Long productId) {
-        return reviewRepository.findByProductId(productId);
+    public List<Review> getReviewByProductId(Long productId, Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 2, Sort.by("createdAt"));
+        return reviewRepository.findByProductId(productId,pageable);
+    }
+
+    @Override
+    public Integer getAllTotalReviewsByProductId(Long productId) {
+        return reviewRepository.findByProductId(productId).size()/2;
     }
 
     @Override
