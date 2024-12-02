@@ -28,8 +28,8 @@ function App() {
   },[seller.profile])
 
   useEffect(()=>{
-    dispatch(fetchUserProfile(localStorage.getItem("jwt")))
-    dispatch(fetchUserAddress(localStorage.getItem("jwt")))
+    // dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+    // dispatch(fetchUserAddress(localStorage.getItem("jwt")))
     dispatch(createHomeCategories(HomeCategories))
   },[localStorage.getItem("jwt")])
 

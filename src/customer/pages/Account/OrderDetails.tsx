@@ -1,11 +1,12 @@
 import { Box, Button, Divider } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import OrderStepper from './OrderStepper';
 import { Payment } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
-import { fetchOrderById, fetchOrderItemById } from '../../../State/customer/OrderSlice';
+import { cancelOrder, fetchOrderById, fetchOrderItemById } from '../../../State/customer/OrderSlice';
 import { formatCurrency } from '../../../Utils/CustomCurrencyVND';
+import { toast } from 'react-toastify';
 
 const OrderDetails = () => {
 
@@ -14,6 +15,7 @@ const OrderDetails = () => {
     const dispatch = useAppDispatch();
     const {orderId, orderItemId} = useParams();
     const {order} = useAppSelector(store => store);
+    const [cancel, setCancel] = useState(false);
 
     console.log("data: ",order.currentOrder?.orderStatus)
 
@@ -21,6 +23,23 @@ const OrderDetails = () => {
         dispatch(fetchOrderById({orderId: Number(orderId), jwt: localStorage.getItem("jwt") || ""}))
         dispatch(fetchOrderItemById({orderItemId: Number(orderItemId), jwt: localStorage.getItem("jwt") || ""}))
     },[])
+
+    const handleCancelOrder=(id:any)=>{
+        setCancel(true);
+        dispatch(cancelOrder(id)).then(()=>{
+            dispatch(fetchOrderItemById({orderItemId: Number(orderItemId), jwt: localStorage.getItem("jwt") || ""}))
+            toast.success('🦄 Wow so easy!', {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+        })
+    }
 
   return (
     <Box className="space-y-5">
@@ -85,14 +104,14 @@ const OrderDetails = () => {
         </div>
         <div className='p-10'>
             <Button
-                disabled = {false}
-                //onClick={handleCancelOrder}
+                disabled = {cancel}
+                onClick={()=>handleCancelOrder(order.currentOrder?.id)}
                 color='error' sx={{py:"0.7rem"}}
                 className='' 
                 variant='outlined' 
                 fullWidth
             >
-                {false ? "order canceled":"Cancel Order"}
+                {cancel ? "order canceled":"Cancel Order"}
             </Button>
         </div>
     </div>

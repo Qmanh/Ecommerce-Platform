@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import "./ProductCard.css";
 import { Favorite, ModeComment, Translate } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Box, Button, Modal } from '@mui/material';
 import {lightBlue } from '@mui/material/colors';
 import { Product } from '../../../types/ProductTypes';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../State/Store';
 import { addProductToWishlist } from '../../../State/customer/WishlistSlice';
 import { formatCurrency } from '../../../Utils/CustomCurrencyVND';
+import Review from '../Review/Review';
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '80%',
+  height:'90%',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 const ProductCard = ({item}:{item:Product}) => {
-
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -36,6 +49,7 @@ const ProductCard = ({item}:{item:Product}) => {
     event.stopPropagation()
     item.id && dispatch(addProductToWishlist({productId:item.id}))
   }
+
 
   return (
     <>
@@ -90,6 +104,8 @@ const ProductCard = ({item}:{item:Product}) => {
           </div>
         </div>
       </div>
+
+      
     </>
   )
 }

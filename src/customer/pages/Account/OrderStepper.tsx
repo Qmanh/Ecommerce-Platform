@@ -4,15 +4,15 @@ import React, { useEffect, useState } from 'react'
 
 const steps = [
     { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED", number:0 },
-    { name: "Packed", description: "Item packed in dispatch Warehouse", value: "CONFIRM" , number:1},
+    { name: "Packed", description: "Item packed in dispatch Warehouse", value: "CONFIRMED" , number:1},
     { name: "Shipped", description: "by Mon, 15 Jul", value: "SHIPPED", number:2 },
     { name: "Arriving", description: "by 16 Jul - 18 Jul", value: "ARRIVING" , number:3},
     { name: "Arrived", description: "by 16 Jul - 18 Jul", value: "DELIVERED" , number:4}
 ];
 
 const canceledStep = [
-    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED", number:5 },
-    { name: "Order Cancelled", description: "on Thu, 11 Jul", value: "CANCELLED",number:6 }
+    { name: "Order Placed", description: "on Thu, 11 Jul", value: "PLACED", number:0 },
+    { name: "Order Cancelled", description: "on Thu, 11 Jul", value: "CANCELLED",number:1 }
 ]
 
 
@@ -23,7 +23,7 @@ const getOrderStatusNumber = (orderStatus:any) => {
     return step ? step.number : null; 
 };
 
-const currentStep = getOrderStatusNumber({orderStatus});
+const currentStep = getOrderStatusNumber(orderStatus);
 
 const [statusStep, setStatusStep] = useState(steps);
 
@@ -67,7 +67,7 @@ const [statusStep, setStatusStep] = useState(steps);
                             <div className={`${step.value === orderStatus
                                 ? "bg-primary-color p-2 text-white font-medium rounded-md -translate-y-3"
                                 : ""
-                                } ${(orderStatus === "CANCELED" && step.value === orderStatus) ? "bg-red-500" : ""}
+                                } ${(orderStatus === "CANCELLED" && step.value === orderStatus) ? "bg-red-500" : ""}
                             w-full
                         `}>
                                 <p className={``}>

@@ -1,5 +1,5 @@
 import { Add, AddShoppingCart, Favorite, FavoriteBorder, LocalShipping, Remove, Shield, Star, Wallet, WorkspacePremium } from '@mui/icons-material'
-import { Button, ButtonGroup, Divider } from '@mui/material'
+import { Box, Button, ButtonGroup, Divider, Modal } from '@mui/material'
 import { lightBlue, yellow } from '@mui/material/colors'
 import React, { useEffect, useState } from 'react'
 import SimilarProduct from './SimilarProduct'
@@ -11,6 +11,19 @@ import { AddItemRequest, addItemToCart } from '../../../State/customer/CartSlice
 import { formatCurrency } from '../../../Utils/CustomCurrencyVND'
 import "./ProductDetails.css";
 import { colors } from '../../../data/filter/color'
+import Review from '../Review/Review'
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '80%',
+  height:'90%',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 const ProductDetails = () => {
 
@@ -24,6 +37,9 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(0);
   const [size,setSize] = useState("");
   const [color,setColor] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const [id, setId] = useState(0);
 
   const sortedSizes = product.product?.sizes.slice().sort((a, b) => b.name.localeCompare(a.name));
   
@@ -33,6 +49,11 @@ const ProductDetails = () => {
 
   const handleActiveImage = (value: number) => () => {
     setActiveImage(value)
+  }
+
+  const handleOpenModal =(id:any)=>{
+    setOpen(true);
+    setId(id);
   }
 
   const itemRequest: AddItemRequest = {
@@ -199,9 +220,8 @@ const ProductDetails = () => {
               {product.product?.description}
             </p>
           </div>
-          <div className='mt-12 space-y-5'>
-            <ReviewCard />
-            <Divider />
+          <div className='mt-5 space-y-5 cursor-pointer' onClick={()=>handleOpenModal(product.product?.id)}>
+            <Button variant='outlined'>Reviews</Button>
           </div>
         </section>
       </div>
@@ -214,6 +234,17 @@ const ProductDetails = () => {
         </div>
       </div>
 
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+            <Review id = {productId}/>
+        </Box>
+      </Modal>
     </div>
   )
 }
