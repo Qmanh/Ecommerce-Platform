@@ -6,13 +6,13 @@ import Orders from './Orders'
 import OrderDetails from './OrderDetails'
 import UserDetails from './UserDetails'
 import Address from './Address'
-import { useAppDispatch} from '../../../State/Store'
+import { useAppDispatch, useAppSelector} from '../../../State/Store'
 import {  fetchUserProfile, logout } from '../../../State/AuthSlice'
 
 const menu = [
-    {name: "orders", path:"/account/orders"},
-    {name: "profile", path:"/account"},
-    {name: "Save Cards", path:"/account/saved-card"},
+    {name: "Orders", path:"/account/orders"},
+    {name: "Profile", path:"/account"},
+    // {name: "Save Cards", path:"/account/saved-card"},
     {name: "Addresses", path:"/account/addresses"},
     {name: "Logout", path:"/"}
 ]
@@ -21,6 +21,7 @@ const Account = () => {
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const {auth} = useAppSelector(store => store);
     const handleClick =(item:any) => {
         
         if(item.path ==="/"){
@@ -32,13 +33,15 @@ const Account = () => {
     const location = useLocation();
 
     useEffect(()=>{
-        dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+        if(localStorage.getItem("jwt")!= null && localStorage.getItem("role")!="ROLE_SELLER"){
+            dispatch(fetchUserProfile(localStorage.getItem("jwt")))
+        }
     },[localStorage.getItem("jwt")])
 
   return (
     <div className='px-5 lg:px-52 min-h-screen mt-10'>
         <div>
-            <h1 className='text-xl font-bold p-5'>Dev</h1>
+            <h1 className='text-xl font-bold p-5'>{auth.user?.fullName}</h1>
         </div>
         <Divider/>
 

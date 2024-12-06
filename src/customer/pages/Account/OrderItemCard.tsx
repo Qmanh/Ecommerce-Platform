@@ -16,7 +16,7 @@ const OrderItemCard = ({item, order}:{item:OrderItem, order:Order}) => {
                 </Avatar>
             </div>
             <div>
-                <h1 className='font-bold text-primary-color'>PENDING</h1>
+                <h1 className='font-bold text-primary-color'>{order.orderStatus}</h1>
                 <p>Arriving By {order.deliverDate}</p>
             </div>
         </div>
@@ -31,9 +31,11 @@ const OrderItemCard = ({item, order}:{item:OrderItem, order:Order}) => {
             <div className='w-full space-y-2'>
                 <h1 className='font-bold'>{item.product?.seller?.businessDetails.businessName}</h1>
                 <p>{item.product?.title}</p>
-                <p>
-                    <strong>size : </strong>
-                    S | M | L | XL
+                <p className='flex justify-between'>
+                    <strong>Size : {item.size}</strong>
+                    <strong className='ml-4'>Quantity : {item.quantity} </strong>
+                    <p>Order Id: {order.id}</p>
+                    
                 </p>
             </div>
         </div>

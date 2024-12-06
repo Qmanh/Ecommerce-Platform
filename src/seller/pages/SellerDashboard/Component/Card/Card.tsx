@@ -43,7 +43,10 @@ const CompactCard = ({ param, setExpanded }: any) => {
             </div>
             <div className="detail">
                 <Png />
-                <span>${param.value}</span>
+                <span>{param.title==="Sales" ? ` ${formatCurrency(param.value)}`: param.value}</span>
+                <span>{param.title==="Sales" ? `${formatCurrency(param.total)}`: ""}</span>
+                
+                
                 <span>Last 24 hours</span>
             </div>
         </div>

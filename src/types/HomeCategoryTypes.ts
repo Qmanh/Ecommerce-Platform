@@ -32,3 +32,10 @@ export enum HomeCategorySection{
     SHOP_BY_CATEGORIES,
     DEALS
 }
+
+export interface Size{
+    id?: number;
+    name:string;
+    description:string;
+    statusSize:string;
+}

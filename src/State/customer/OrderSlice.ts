@@ -1,4 +1,4 @@
-import { OrderStatus } from './../../types/OrderTypes';
+import { FetchOrderHistoryResponse, MoneyAndProducts, OrderStatus } from './../../types/OrderTypes';
 
 import { PayloadAction } from './../../../node_modules/@reduxjs/toolkit/src/createAction';
 import { Address } from './../../types/userTypes';
@@ -8,8 +8,12 @@ import { api } from "../../config/Api";
 import { Order, OrderItem, OrderState } from "../../types/OrderTypes";
 import axios from 'axios';
 
+
+
 const initialState: OrderState = {
     orders: [],
+    dataList:{dataList:[],totalPageNumber:0},
+    moneyAndProduct:{totalMoneyByOrder:0,totalProductBySeller:0},
     orderItem: null,
     currentOrder: null,
     paymentOrder: null,
@@ -21,15 +25,21 @@ const initialState: OrderState = {
 
 const API_URL = "/api/orders";
 
-export const fetchUserOrderHistory = createAsyncThunk<Order[], string>(
+export const fetchUserOrderHistory = createAsyncThunk<FetchOrderHistoryResponse, {jwt:string, params:any}>(
     "orders/fetchUserOrderHistory",
-    async (jwt, {rejectWithValue}) => {
+    async ({jwt,params}, {rejectWithValue}) => {
         try {
             const response = await api.get(`${API_URL}/user`,{
                 headers: {Authorization:`Bearer ${jwt}`},
+                params:{
+                    ...params,
+                    pageNumber:params.pageNumber || 0
+                }
             });
             console.log("order history fetched ", response.data);
-            return response.data;
+            const { dataList, totalPageNumber }= response.data;
+            
+            return { dataList, totalPageNumber };
         } catch (error:any) {
             console.log("error ", error.response);
             return rejectWithValue(
@@ -122,6 +132,24 @@ export const cancelOrder = createAsyncThunk<Order, any>(
         }
 })
 
+export const fetchTotalMoneyAndProductsBySeller = createAsyncThunk<any,any>("/sellers/fetchTotalMoneyAndProductsBySeller",
+    async(jwt, {rejectWithValue}) => {
+        try {
+            const response = await api.get("/api/orders/total-price-seller",{
+                headers:{
+                    Authorization: `Bearer ${jwt}`,
+                },
+            })
+            console.log("Money and Products:  ", response.data)
+            const{totalMoneyByOrder, totalProductBySeller} = response.data;
+            return {totalMoneyByOrder, totalProductBySeller}
+            
+        } catch (error:any) {
+            console.log("error - - -", error)
+        }
+    }
+)
+
 const orderSlice = createSlice({
     name:"orders",
     initialState,
@@ -134,8 +162,8 @@ const orderSlice = createSlice({
                 state.orderCanceled = false;
             })
 
-            .addCase(fetchUserOrderHistory.fulfilled, (state, action: PayloadAction<Order[]>)=>{
-                state.orders = action.payload;
+            .addCase(fetchUserOrderHistory.fulfilled, (state, action:PayloadAction<FetchOrderHistoryResponse>)=>{
+                state.dataList = action.payload;
                 state.loading = false;
             })
             .addCase(fetchUserOrderHistory.rejected, (state, action)=>{
@@ -214,6 +242,18 @@ const orderSlice = createSlice({
                 state.currentOrder = action.payload
             })
             .addCase(cancelOrder.rejected, (state, action)=>{
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+
+            builder.addCase(fetchTotalMoneyAndProductsBySeller.pending,(state)=>{
+                state.loading = true;
+            })
+            .addCase(fetchTotalMoneyAndProductsBySeller.fulfilled, (state, action:PayloadAction<MoneyAndProducts>)=>{
+                state.loading = false;
+                state.moneyAndProduct = action.payload;
+            })
+            .addCase(fetchTotalMoneyAndProductsBySeller.rejected, (state, action)=>{
                 state.loading = false;
                 state.error = action.payload as string;
             })

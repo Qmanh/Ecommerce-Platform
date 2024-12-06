@@ -28,7 +28,7 @@ const OrderDetails = () => {
         setCancel(true);
         dispatch(cancelOrder(id)).then(()=>{
             dispatch(fetchOrderItemById({orderItemId: Number(orderItemId), jwt: localStorage.getItem("jwt") || ""}))
-            toast.success('🦄 Wow so easy!', {
+            toast.success('Cancel Order Successfully!', {
                 position: "bottom-right",
                 autoClose: 3000,
                 hideProgressBar: false,

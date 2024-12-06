@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import FilterSection from './FilterSection'
 import ProductCard from './ProductCard'
 import { Divider, FormControl, IconButton, InputLabel, MenuItem, Pagination, Select, useMediaQuery, useTheme } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, sizeHeight } from '@mui/system'
 import { FilterAlt } from '@mui/icons-material'
 import { useAppDispatch, useAppSelector } from '../../../State/Store'
 import { fetchAllProducts } from '../../../State/customer/ProductSlice'
@@ -28,6 +28,7 @@ const Product = () => {
     setPage(value);
   }
 
+ 
   useEffect(()=>{
     const [minPrice, maxPrice] = searchParam.get("price")?.split("-")|| [];
     const color = searchParam.get("color");
@@ -44,12 +45,14 @@ const Product = () => {
     dispatch(fetchAllProducts(newFillter))
   },[category, searchParam])
 
+  const size = product.products.length / 5
+  
   return (
     <div className='-z-10 mt-10'>
       <div>
         <h1 className='text-3xl text-center font-bold
          text-gray-700 pb-5 px-9 uppercase space-x-2'>
-          Men T-shirts
+          {category?.replace("_"," ").replace("_","-")}
         </h1>
       </div>
 
@@ -104,7 +107,7 @@ const Product = () => {
           <div className='flex justify-center py-10'>
             <Pagination 
               onChange={(e,value) => handlePageChange(value)}
-              count={10}
+              count={size < 1 ? 1 : size}
               variant="outlined" 
               color="primary"  
             />

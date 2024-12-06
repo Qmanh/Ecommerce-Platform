@@ -38,14 +38,5 @@ export const mainCategory =[
             }
         ]
     },
-    {
-        name:"Home & Furniture",
-        categoryId:"home_furniture",
-        level:1
-    },
-    {
-        name:"Electronics",
-        categoryId:"electronics",
-        level:1
-    }
+    
 ]

@@ -27,7 +27,10 @@ const AppRoutes = () => {
     const dispatch = useAppDispatch();
 
     useEffect(()=>{
-        dispatch(fetchUserProfile(localStorage.getItem("jwt")||""))
+        if(localStorage.getItem("jwt")&& localStorage.getItem("role")!="ROLE_SELLER"){
+            dispatch(fetchUserProfile(localStorage.getItem("jwt")||""))
+        }
+        
     },[localStorage.getItem("jwt")])
     return (
         <>
@@ -49,10 +52,10 @@ const AppRoutes = () => {
                         <SellerDashboard/>
                     </PrivateRoute>}
                 />
-
-                <Route path="/admin/*" element={<AuthRoute data={auth}/>}>
-                    <Route path='/admin/**' element={<AdminDashboard/>}/>
-                </Route>
+ <Route path='/admin/*' element={<AdminDashboard/>}/>
+                {/* <Route path="/admin/*" element={<AuthRoute data={auth}/>}>
+                   
+                </Route> */}
 
                 <Route path="/account/*" element={<AuthRoute data={auth}/>}
                 >

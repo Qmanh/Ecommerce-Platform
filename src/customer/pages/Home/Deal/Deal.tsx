@@ -19,7 +19,7 @@ function Deal() {
     <div className='py-5 lg:px-20 '>
         <div className='flex items-center justify-between'>
        
-            {customer.homePageData?.deals.slice(0,6).map((item)=> <DealCard item={item}/>)}
+            {customer.homePageData?.deals.map((item)=> <DealCard item={item}/>)}
         </div>
     </div>
   )

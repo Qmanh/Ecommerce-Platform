@@ -17,6 +17,7 @@ import adminCouponSlice from "./admin/adminCouponSlice"
 import addressSlice from "./customer/AddressSlice"
 import couponSlice from "./customer/CouponSlice"
 import reviewSlice from "./customer/ReviewSlice"
+import categorySlice from "./admin/categorySlice"
 
 const rootReducer = combineReducers({
     seller:sellerSlice,
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
     homeCategory: homeCategorySlice,
     deal: dealSlice,
     coupons: adminCouponSlice,
+    category: categorySlice,
 })
 const store = configureStore({
     reducer:rootReducer,

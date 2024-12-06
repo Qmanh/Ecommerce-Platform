@@ -2,8 +2,18 @@
 import { Product } from "./ProductTypes";
 import { Address, User } from "./userTypes";
 
+export interface FetchOrderHistoryResponse {
+    dataList: Order[]
+    totalPageNumber: number;
+}
+export interface MoneyAndProducts{
+    totalMoneyByOrder:number,
+    totalProductBySeller:number,
+}
 export interface OrderState {
     orders: Order[];
+    moneyAndProduct: MoneyAndProducts;
+    dataList: FetchOrderHistoryResponse;
     orderItem: OrderItem | null;
     currentOrder: Order | null;
     paymentOrder: any | null;

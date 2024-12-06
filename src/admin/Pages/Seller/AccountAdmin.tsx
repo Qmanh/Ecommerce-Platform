@@ -2,17 +2,18 @@ import { Box, Button, Modal } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getAllDeals } from '../../../State/admin/dealSlice';
 import { useAppDispatch } from '../../../State/Store';
-import CouponTable from './CouponTable';
-import AddNewCouponForm from './AddNewCouponForm';
+import SellersTable from './SellersTable';
+import CustomersTable from './CustomersTable';
+
 
 
 const tabs = [
-  "Coupon Table",
-  "Create Coupon",
+  "Seller Table",
+  "Customer Table",
 
 ]
-const Coupon = () => {
-  const [activeTab, setActiveTab] = useState("Coupon Table");
+const AccountAdmin = () => {
+  const [activeTab, setActiveTab] = useState("Seller Table");
   function handleClose(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void {
     throw new Error('Function not implemented.');
   }
@@ -24,14 +25,12 @@ const Coupon = () => {
       </div>
       <div className='mt-5'>
         {
-          activeTab == "Coupon Table"?<CouponTable/>: 
-          <div className='mt-5 flex flex-col justify-center items-center h-[70vh]'>
-            <AddNewCouponForm/>
-          </div>
+          activeTab == "Seller Table"?<SellersTable/>: 
+          <CustomersTable/>
         }
       </div>
     </div>
   )
 }
 
-export default Coupon
+export default AccountAdmin

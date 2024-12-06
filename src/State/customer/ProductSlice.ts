@@ -1,7 +1,8 @@
+import { Product } from './../../types/ProductTypes';
 import { Category } from '@mui/icons-material';
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { api } from "../../config/Api"
-import { Product } from "../../types/ProductTypes"
+
 
 const API_URL = "/products"
 export const fetchProductById = createAsyncThunk<any,any>("products/fetchProductById", 
@@ -51,17 +52,23 @@ export const fetchAllProducts= createAsyncThunk<any, any>("products/fetchAllProd
             
             const data = response.data
             console.log("All products data: ",data)
-            return data
+            const { content, numberOfElements }= response.data;
+            
+            return { content, numberOfElements };
         } catch (error) {
             console.log('error ', error)
             rejectWithValue(error)
         }
     }
 )
-
+interface FetchProductTotalItems {
+    content: Product[],
+    numberOfElements:number,
+}
 interface ProductState{
     product:Product | null,
     products: Product[],
+    listProducts:FetchProductTotalItems,
     totalPages: number,
     loading: boolean,
     error: string | null | undefined | any,
@@ -71,6 +78,7 @@ interface ProductState{
 const initialState: ProductState={
     product: null,
     products: [],
+    listProducts:{content:[],numberOfElements:0},
     totalPages: 1,
     loading: false,
     error: null,

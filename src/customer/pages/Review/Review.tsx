@@ -152,7 +152,7 @@ const Review = ({id}:any) => {
       </section>
 
       <section className='space-y-2 w-full'>
-        {review.reviews.reviews?.map((item) =>
+        {review.reviews.reviews?.map((item:any) =>
           <div className='space-y-1'>
             <ReviewCard data={item}/>
             <Divider />

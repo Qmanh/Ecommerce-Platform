@@ -8,10 +8,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
 import { fetchSellerOrders, updateOrderStatus } from '../../../State/seller/sellerOrderSlice';
-import { Button, Menu, MenuItem, Pagination } from '@mui/material';
+import { Box, Button, Menu, MenuItem, Modal, Pagination } from '@mui/material';
 import { OrderStatus } from '../../../types/OrderTypes';
 import './OrderTable.css';
 import { formatDate } from '../../../Utils/FormatDate';
+import OrderDetail from './OrderDetail';
 
 const orderStatusColor = {
   PENDING: {color: '#FFB90F', label: 'PENDING'},
@@ -30,10 +31,22 @@ const orderStatus = [
   {color:'#32CD32', label: 'DELIVERED'},
   {color:'#FF0000', label: 'CANCELLED'},
 ]
-
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 800,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 const OrderTable = () => {
     const dispatch = useAppDispatch();
+    const [openModal, setOpenModal] = useState(false);
+    const [dataDetail, setDataDetail] = useState("");
+    const handleCloseModal = () => setOpenModal(false);
     const {sellerOrder} = useAppSelector(store => store);
     const [page, setPage] = useState(0);
 
@@ -65,6 +78,11 @@ const OrderTable = () => {
       const number = value - 1
       const fillter={pageNumber: number};
       dispatch(fetchSellerOrders({jwt, params: fillter}))
+    }
+
+    const handleGetDetail=(data:any)=>{
+      setOpenModal(true);
+      setDataDetail(data);
     }
     useEffect(()=>{
       const currentFillter = { ...newFillter, pageNumber: page };
@@ -134,7 +152,7 @@ const OrderTable = () => {
                     </Menu>
                   </TableCell>
                   <TableCell align='left'>
-                      <span className='Details'>Detail</span>
+                      <span className='Details cursor-pointer' onClick={()=>handleGetDetail(item)}>Detail</span>
                   </TableCell>
                 </TableRow>
               ))}
@@ -145,12 +163,23 @@ const OrderTable = () => {
         <div className='flex justify-center py-10'>
             <Pagination 
               onChange={(e,value) => handlePageChange(value)}
-              count={sellerOrder.orderList.totalPageNumber}
+              count={sellerOrder.orderList.totalPageNumber < 1 ? 1:sellerOrder.orderList.totalPageNumber }
               variant="outlined" 
               color="primary"  
             />
           </div>
         </div> 
+
+        <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <OrderDetail onClose={handleCloseModal} data={dataDetail}/>
+        </Box>
+      </Modal>
       </>
       );
 }

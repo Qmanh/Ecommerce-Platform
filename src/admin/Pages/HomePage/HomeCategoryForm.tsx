@@ -10,6 +10,7 @@ import { HomeCategory, HomeCategorySection, HomeCategoryUpdate } from '../../../
 import { updateHomeCategory } from '../../../State/admin/adminSlice'
 import { sectionCategory } from '../../../data/SectionCategory'
 import { toast } from 'react-toastify'
+import { fetchHomePageData } from '../../../State/customer/CustomerSlice'
 
 const CategoryFormSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -40,6 +41,7 @@ const HomeCategoryForm = ({data}: {data:any}) => {
             console.log("homeCategory: ",values);
             dispatch(updateHomeCategory({id:data.id,data:values}))
             .then(()=>{
+                dispatch(fetchHomePageData())
                 toast.success('Updated Home Category Successfully!', {
                     position: "bottom-right",
                     autoClose: 2000,

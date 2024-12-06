@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from './State/Store';
 
-import { createHomeCategories } from './State/customer/CustomerSlice';
+import { fetchHomePageData } from './State/customer/CustomerSlice';
 import { HomeCategories } from './data/HomeCategories';
 import AppRoutes from './Routes/AppRoutes';
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchUserAddress, fetchUserProfile } from './State/AuthSlice';
+import { getAllCategoriesCustomer, getAllCategoriesCustomer2, getAllCategoriesCustomer3 } from './State/admin/categorySlice';
 
 
 
@@ -30,8 +31,16 @@ function App() {
   useEffect(()=>{
     // dispatch(fetchUserProfile(localStorage.getItem("jwt")))
     // dispatch(fetchUserAddress(localStorage.getItem("jwt")))
-    dispatch(createHomeCategories(HomeCategories))
-  },[localStorage.getItem("jwt")])
+    // dispatch(createHomeCategories(HomeCategories))
+    dispatch(fetchHomePageData())
+  },[])
+
+  useEffect(()=>{
+    dispatch(getAllCategoriesCustomer())
+    dispatch(getAllCategoriesCustomer2())
+    dispatch(getAllCategoriesCustomer3())
+    
+},[])
 
   return (
  

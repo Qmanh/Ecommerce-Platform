@@ -1,7 +1,8 @@
+import { formatCurrency } from "../../Utils/CustomCurrencyVND";
+
 export const price = [
-    {"name":"Below 50$", "min":0, "max":50, value:"0 - 50"},
-    {"name":"50$ - 100$", "min":50, "max":100, value:"50 - 100"},
-    {"name":"100$ - 150$", "min":100, "max":150, value:"100 - 150"},
-    {"name":"150$ - 200$", "min":150, "max":200, value:"150 - 200"},
-    {"name":"200$ and above", "min":200, "max":null, value:"200"},
+    {"name":`Below ${formatCurrency(200000)}`, "min":0, "max":200000, value:"0 - 200000"},
+    {"name":`${formatCurrency(200000)} - ${formatCurrency(500000)}`, "min":200000, "max":500000, value:"200000 - 500000"},
+    {"name":`${formatCurrency(500000)} - ${formatCurrency(1000000)}`, "min":500000, "max":1000000, value:"500000 - 1000000"},
+    {"name":`${formatCurrency(1000000)} and above`, "min":1000000, "max":null, value:"1000000"},
 ]

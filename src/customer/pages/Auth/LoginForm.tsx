@@ -85,8 +85,16 @@ const LoginForm = () => {
             Login
           </Button>
           :
+          auth.loading ? <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <CircularProgress />
+          </div>
+          :
           <Button onClick={handleSendOtp} fullWidth variant="contained" sx={{ py: "11px" }}>
-            {auth.loading ? <CircularProgress /> : "Send OTP"}
+            Send OTP
           </Button>
         }
 

@@ -17,7 +17,7 @@ export const createDeal = createAsyncThunk("deals/createDeal",
             const response = await api.post("/admin/deals", deal, {
                 headers:{
                     "Content-Type": "application/json",
-                    Authorization:`Bearer ${localStorage.getItem("jwt")}`
+                    Authorization:`Bearer ${localStorage.getItem("jwt")||""}`
                 }
             })
             console.log("create deal ", response.data);
@@ -55,7 +55,7 @@ export const getAllDeals = createAsyncThunk(
             const response = await api.get("/admin/deals",{
                 headers: {
                     "Content-Type" : "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`
+                    Authorization: `Bearer ${localStorage.getItem("jwt")||""}`
                 }
             })
             console.log("get all deal ", response.data);
@@ -73,7 +73,7 @@ export const deleteDeal = createAsyncThunk<ApiResponse, {id:number}>(
         try {
             console.log("check id: ",id)
             const response = await api.delete(`/admin/deals/${id}`,{
-                headers: {Authorization:`Bearer ${localStorage.getItem("jwt")}`}
+                headers: {Authorization:`Bearer ${localStorage.getItem("jwt")||""}`}
             })
             return response.data;
         } catch (error:any) {

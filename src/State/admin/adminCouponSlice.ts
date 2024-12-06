@@ -18,7 +18,7 @@ export const createCoupon = createAsyncThunk<Coupon, {coupon: any; jwt: string},
 >("coupon/createCoupon", async({coupon,jwt},{rejectWithValue})=>{
     try {
         const response = await api.post(`${API_URL}/create`,coupon,{
-            headers:{Authorization:`Bearer ${jwt}`}
+            headers:{Authorization:`Bearer ${jwt||""}`}
         })
         console.log("created coupon ", response.data);
         return response.data;

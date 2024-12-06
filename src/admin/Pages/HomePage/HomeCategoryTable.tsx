@@ -12,8 +12,9 @@ import { Edit } from '@mui/icons-material';
 import { HomeCategory } from '../../../types/HomeCategoryTypes';
 import HomeCategoryForm from './HomeCategoryForm';
 import { useAppDispatch } from '../../../State/Store';
-import { createHomeCategories } from '../../../State/customer/CustomerSlice';
 import { HomeCategories } from '../../../data/HomeCategories';
+import { createHomeCategories } from '../../../State/customer/CustomerSlice';
+import { fetchHomeCategories } from '../../../State/admin/adminSlice';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -58,7 +59,7 @@ const HomeCategoryTable = ({data}:{data:HomeCategory[]}) => {
     }
 
     const handleClose = () => {
-      dispatch(createHomeCategories(HomeCategories))
+      dispatch(fetchHomeCategories())
       setOpen(false)
     };
     return (

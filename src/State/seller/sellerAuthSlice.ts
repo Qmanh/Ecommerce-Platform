@@ -31,3 +31,4 @@ export const verifyEmail = createAsyncThunk<any, any>("/auth/verify",
         }
     }
 )
+

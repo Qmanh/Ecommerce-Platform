@@ -32,32 +32,35 @@ const categoryThree: { [key: string]: any[] } = {
   home_furniture: furnitureLevelThree
 }
 
-const AddProduct = ({ onClose }: { onClose: any }) => {
+const UpdateProduct = ({ onClose, data }: { onClose: any; data: any }) => {
   const [uploadImage, setUploadImage] = useState(false);
   const [snackbar, setSnackbar] = useState(false);
   const dispatch = useAppDispatch();
   const { homeCategory } = useAppSelector(store => store);
-  const sizesArray = homeCategory.sizes.map((size: any) => size.name);
+  const sizesArray = data.sizes.map((size: any) => size.name);
 
+  console.log("editpr: ", data);
   const formik = useFormik({
     initialValues: {
-      title: "",
-      description: "",
-      mrpPrice: 0,
-      sellingPrice: 0,
-      quantity: 0,
-      color: "",
-      images: [],
-      category: "",
-      category2: "",
-      category3: "",
-      sizes: [],
+      title: data.title || "",
+      description: data.description || "",
+      mrpPrice: data.mrpPrice || 0,
+      sellingPrice: data.sellingPrice || 0,
+      quantity: data.quantity || 0,
+      color: data.color || "",
+      images: data.images || [],
+      category: data.category.parentCategory.parentCategory.categoryId || "",
+      category2: data.category.parentCategory.categoryId || "",
+      category3: data.category.categoryId || "",
+      sizes: sizesArray || [],
     },
     onSubmit: (values, { resetForm }) => {
 
-      dispatch(createProduct({ request: values, jwt: localStorage.getItem("jwt") }))
+
+      console.log("values: ", values)
+      dispatch(updateProduct({ request: values, jwt: localStorage.getItem("jwt"), id: data.id }))
         .then(() => {
-          toast.success('Created Product Successfully!', {
+          toast.success('Updated Product Successfully!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -67,8 +70,6 @@ const AddProduct = ({ onClose }: { onClose: any }) => {
             progress: undefined,
             theme: "light",
           });
-
-          resetForm();
           onClose();
         })
 
@@ -390,7 +391,7 @@ const AddProduct = ({ onClose }: { onClose: any }) => {
               type="submit"
             // disabled={sellerProduct.loading}
             >
-               Add Product
+              Edit Product
             </Button>
           </Grid2>
         </Grid2>
@@ -399,4 +400,4 @@ const AddProduct = ({ onClose }: { onClose: any }) => {
   )
 }
 
-export default AddProduct
+export default UpdateProduct

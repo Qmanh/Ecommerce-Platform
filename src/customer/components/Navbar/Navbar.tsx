@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../../State/Store";
 import { sellerLogin } from "../../../State/seller/sellerAuthSlice";
 import { fetchUserAddress, fetchUserProfile } from "../../../State/AuthSlice";
 import { fetchSellerProfile } from "../../../State/seller/sellerSlice";
+import { getAllCategoriesCustomer } from "../../../State/admin/categorySlice";
 
 const Navbar = () => {
 
@@ -19,18 +20,20 @@ const Navbar = () => {
     const [showCategory, setShowCategory] = useState(false);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const {auth, seller} = useAppSelector(store=>store)
+    const {auth, seller,cart, category} = useAppSelector(store=>store)
+   
 
     useEffect(()=>{
         if(localStorage.getItem("role")==="ROLE_SELLER"){
             dispatch(fetchSellerProfile(jwt))
+        }else if(localStorage.getItem("jwt")){
+            dispatch(fetchUserProfile(jwt))
+            dispatch(fetchUserAddress(jwt))
+            
         }
     
-        dispatch(fetchUserProfile(jwt))
-        dispatch(fetchUserAddress(jwt))
-        
-        
-    },[jwt])
+    },[])
+
     return (
         <>
             <Box className="sticky top-0 left-0 right-0 bg-white" sx={{zIndex:2}}>
@@ -47,7 +50,7 @@ const Navbar = () => {
                             </h1>
                         </div>
                         <ul className="flex items-center font-medium text-gray-800">
-                            {mainCategory.map((item)=> 
+                            {category.category.map((item)=> 
                             
                             <li 
                                 onMouseLeave={()=> {
@@ -115,7 +118,13 @@ const Navbar = () => {
                         </IconButton>
 
                         <IconButton onClick={()=>navigate("/cart")}>
+                            
                             <AddShoppingCart className="text-gray-700" sx={{fontSize:29}}/>
+                            
+                            <div className="text-sm text-white mt-[-20px] bg-gray-600 w-5 h-5" style={{borderRadius:'100%'}}>
+                                <p>{cart.cart?.cartItems.length || 0}</p>
+                            </div>
+                            
                         </IconButton>
 
                         { isLarge  && <Button onClick={()=> navigate("/become-seller")} startIcon={<Storefront/>} variant="outlined">

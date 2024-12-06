@@ -1,7 +1,17 @@
 import { AccountStatus, Seller } from './../../types/SellerType';
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { api } from "../../config/Api";
 
+export const sendLoginSignupOtp = createAsyncThunk("/sellers/sendLoginSignupOtp",
+    async({email}:{email:string}, {rejectWithValue}) => {
+        try {
+            const response = await api.post("/auth/sent/login-signup-otp",{email})
+            console.log("login otp ", response)
+        } catch (error) {
+            console.log("error - - -", error)
+        }
+    }
+)
 
 export const fetchSellerProfile = createAsyncThunk<any,any>("/sellers/fetchSellerProfile",
     async(jwt, {rejectWithValue}) => {
@@ -72,8 +82,30 @@ export const createSeller = createAsyncThunk<any, any>("/auth/create-seller",
     }
 )
 
+export const getTotalEarning = createAsyncThunk<any>("/auth/getTotalEarnings",
+    async(_, {rejectWithValue}) => {
+        try {
+            const response = await api.get("/sellers/total-earnings",{
+                headers: {Authorization: `Bearer ${localStorage.getItem("jwt")||""}`}
+            })
+            console.log("totalEarning:  ", response.data)
+            return response.data;
+        } catch (error) {
+            console.log("error - - -", error)
+        }
+    }
+)
+
+interface sellerReport{
+    totalEarning: number,
+    totalOrders: number,
+    totalCancelOrders: number
+}
+
 interface SellerState{
     sellers:any[],
+    totalEarning:sellerReport,
+    sentOtp:boolean,
     jwt:any,
     selectedSeller:any,
     profile:any,
@@ -84,6 +116,8 @@ interface SellerState{
 
 const initialState:SellerState = {
     sellers:[],
+    totalEarning:{totalEarning:0,totalCancelOrders:0,totalOrders:0},
+    sentOtp:false,
     jwt:null,
     selectedSeller:null,
     profile:null,
@@ -125,6 +159,31 @@ const sellerSlice = createSlice({
             state.loading = false;
             state.jwt = action.payload;
         })
+        builder.addCase(sendLoginSignupOtp.pending,(state)=>{
+            state.loading = true;
+        })
+
+        builder.addCase(sendLoginSignupOtp.fulfilled,(state)=>{
+            state.loading = false;
+            state.sentOtp = true;
+        })
+        builder.addCase(sendLoginSignupOtp.rejected,(state)=>{
+            state.loading = false;
+        })
+
+        builder.addCase(getTotalEarning.pending,(state)=>{
+            state.loading = true;
+        })
+        .addCase(getTotalEarning.fulfilled, (state, action:PayloadAction<sellerReport>)=>{
+            state.loading = false;
+            state.totalEarning = action.payload;
+        })
+        .addCase(getTotalEarning.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+
+        
     }
 })
 

@@ -5,6 +5,7 @@ import { Add, AddCircle } from '@mui/icons-material'
 import { lightBlue } from '@mui/material/colors'
 import AddProduct from './AddProduct'
 
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -39,7 +40,7 @@ const Products = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <AddProduct onClose={handleClose} data={""}/>
+          <AddProduct onClose={handleClose} />
         </Box>
       </Modal>
     </div>
