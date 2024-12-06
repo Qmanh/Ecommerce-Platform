@@ -16,6 +16,9 @@ public interface ProductRepository extends JpaRepository<Product,Long>, JpaSpeci
 
     List<Product> findBySellerId(Long id, Pageable pageable);
 
+    @Query("SELECT count (p) as total FROM Product p Where p.seller.id = :sellerId")
+    Integer totalProductsBySellerId(Long sellerId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Product p SET p.images = NULL WHERE p.id = :productId")

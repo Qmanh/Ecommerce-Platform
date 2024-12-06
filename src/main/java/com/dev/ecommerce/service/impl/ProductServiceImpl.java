@@ -230,6 +230,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Integer getTotalProductBySellerId(Long sellerId) {
+        return productRepository.totalProductsBySellerId(sellerId);
+    }
+
+    @Override
     public List<Product> getProductBySellerId(Long sellerId, Integer pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 5, Sort.by("createdAt"));

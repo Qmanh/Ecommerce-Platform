@@ -1,5 +1,6 @@
 package com.dev.ecommerce.utils;
 
+import com.dev.ecommerce.domain.AccountStatus;
 import com.dev.ecommerce.domain.USER_ROLE;
 import com.dev.ecommerce.model.User;
 import com.dev.ecommerce.repository.UserRepository;
@@ -29,6 +30,7 @@ public class DataInititalizationComponent implements CommandLineRunner {
             adminUser.setFullName("Admin");
             adminUser.setEmail(adminUsername);
             adminUser.setRole(USER_ROLE.ROLE_ADMIN);
+            adminUser.setAccountStatus(AccountStatus.ACTIVE);
 
             User admin = userRepository.save(adminUser);
         }

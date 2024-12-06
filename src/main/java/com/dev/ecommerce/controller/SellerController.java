@@ -5,6 +5,7 @@ import com.dev.ecommerce.domain.AccountStatus;
 import com.dev.ecommerce.dto.request.LoginRequest;
 import com.dev.ecommerce.dto.response.ApiResponse;
 import com.dev.ecommerce.dto.response.AuthResponse;
+import com.dev.ecommerce.dto.response.InformReportSeller;
 import com.dev.ecommerce.exceptions.SellerException;
 import com.dev.ecommerce.model.Seller;
 import com.dev.ecommerce.model.SellerReport;
@@ -123,5 +124,13 @@ public class SellerController {
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id)throws Exception{
         sellerService.deleteSeller(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/total-earnings")
+    public ResponseEntity<InformReportSeller> getTotalEarnings(@RequestHeader("Authorization")String jwt) throws Exception {
+        Seller seller = sellerService.getSellerProfile(jwt);
+
+        return ResponseEntity.ok(sellerReportService.getTotalEarningBySellerId(seller));
+
     }
 }

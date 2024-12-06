@@ -5,5 +5,5 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface VNPService {
 
-    public PaymentResponseDTO createVnPayPayment(HttpServletRequest request,Long totalAmount, Long orderId);
+    public PaymentResponseDTO createVnPayPayment(HttpServletRequest request,Double totalAmount, Long orderId);
 }

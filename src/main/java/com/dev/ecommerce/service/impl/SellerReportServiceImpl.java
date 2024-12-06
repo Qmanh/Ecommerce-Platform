@@ -1,5 +1,7 @@
 package com.dev.ecommerce.service.impl;
 
+import com.dev.ecommerce.dto.response.InformReportSeller;
+import com.dev.ecommerce.exceptions.SellerException;
 import com.dev.ecommerce.model.Seller;
 import com.dev.ecommerce.model.SellerReport;
 import com.dev.ecommerce.repository.SellerReportRepository;
@@ -31,5 +33,21 @@ public class SellerReportServiceImpl implements SellerReportService {
     @Override
     public SellerReport updateSellerReport(SellerReport sellerReport) {
         return sellerReportRepository.save(sellerReport);
+    }
+
+    @Override
+    public InformReportSeller getTotalEarningBySellerId(Seller seller) {
+        if(seller!=null){
+            SellerReport sellerReport =  sellerReportRepository.findBySellerId(seller.getId());
+            InformReportSeller informReportSeller = new InformReportSeller();
+            informReportSeller.setTotalEarning(sellerReport.getTotalEarnings());
+            informReportSeller.setTotalOrders((sellerReport.getTotalOrders()));
+            informReportSeller.setTotalCancelOrders(sellerReport.getCanceledOrders());
+
+            return informReportSeller;
+        }else{
+            throw new SellerException("Not found seller...");
+        }
+
     }
 }

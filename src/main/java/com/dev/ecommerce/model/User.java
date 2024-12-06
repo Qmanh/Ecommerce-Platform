@@ -1,5 +1,6 @@
 package com.dev.ecommerce.model;
 
+import com.dev.ecommerce.domain.AccountStatus;
 import com.dev.ecommerce.domain.USER_ROLE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,6 +29,7 @@ public class User extends abstractEntity {
     private String mobile;
 
     private USER_ROLE role = ROLE_CUSTOMER;
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @OneToMany
     private Set<Address> addresses  = new HashSet<>();

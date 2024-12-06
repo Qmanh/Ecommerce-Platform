@@ -5,6 +5,10 @@ import com.dev.ecommerce.repository.HomeCategoryRepository;
 import com.dev.ecommerce.service.HomeCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +60,11 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
     @Override
     public List<HomeCategory> getAllHomeCategories() {
         return homeCategoryRepository.findAll();
+    }
+
+    @Override
+    public Page<HomeCategory> getAllHomeCategories(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 7, Sort.by("createdAt"));
+        return homeCategoryRepository.findAll(pageable);
     }
 }

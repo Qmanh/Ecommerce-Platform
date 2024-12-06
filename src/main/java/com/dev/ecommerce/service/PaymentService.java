@@ -15,5 +15,5 @@ public interface PaymentService {
     public PaymentOrder getPaymentOrderByPaymentId(Long paymentId) throws Exception;
     public Boolean ProceedPaymentOrder(PaymentOrder paymentOrder, Long paymentId, String vnp_CardType, String vnp_PayDate);
 
-    public PaymentResponseDTO createShipCod(User user, Long amount, Long id);
+    public PaymentResponseDTO createShipCod(User user, Double amount, Long id);
 }

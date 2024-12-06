@@ -27,7 +27,7 @@ public class AppConfig {
                 SessionCreationPolicy.STATELESS
         ))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/products/*/reviews").permitAll()
+                        .requestMatchers("/api/products/*/reviews","/api/home-category","/customer/category").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/sellers/create","/sellers/login","/sellers/verify/{otp}").permitAll()
                         .requestMatchers("/admin/*","/sellers/get-all","/sellers/{sellerId}/update-status/{accountStatus}").hasRole("ADMIN")

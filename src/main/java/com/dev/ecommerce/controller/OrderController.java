@@ -2,7 +2,9 @@ package com.dev.ecommerce.controller;
 
 import com.dev.ecommerce.domain.PaymentMethod;
 import com.dev.ecommerce.domain.PaymentStatus;
+import com.dev.ecommerce.dto.response.DataResponse;
 import com.dev.ecommerce.dto.response.PaymentLinkResponse;
+import com.dev.ecommerce.dto.response.SellerReportResponse;
 import com.dev.ecommerce.model.*;
 import com.dev.ecommerce.service.*;
 import com.dev.ecommerce.vnpay.config.VNPayConfig;
@@ -31,6 +33,7 @@ public class OrderController {
     private final SellerReportService sellerReportService;
     private final PaymentService paymentService;
     private final VNPService vnpService;
+    private final ProductService productService;
 
     @PostMapping()
     public ResponseEntity<PaymentLinkResponse> createOrderHandler(@RequestBody Address shippingAddress,
@@ -56,11 +59,16 @@ public class OrderController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<Order>> usersOrderHistoryHandler(
-            @RequestHeader("Authorization")String jwt) throws Exception {
+    public ResponseEntity<DataResponse<Order>> usersOrderHistoryHandler(
+            @RequestHeader("Authorization")String jwt,
+            @RequestParam(defaultValue = "0")Integer pageNumber) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        List<Order> orders = orderService.usersOrderHistory(user.getId());
-        return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
+        List<Order> orders = orderService.usersOrderHistory(user.getId(),pageNumber);
+
+        DataResponse dataResponse = new DataResponse();
+        dataResponse.setDataList(orders);
+        dataResponse.setTotalPageNumber(orderService.getTotalPageNumberOrderHistory(user.getId()));
+        return new ResponseEntity<>(dataResponse, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{orderId}")
@@ -96,5 +104,20 @@ public class OrderController {
         sellerReportService.updateSellerReport(report);
 
         return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/total-price-seller")
+    public ResponseEntity<SellerReportResponse> totalMoneyAndProductsBySeller (@RequestHeader("Authorization")String jwt) throws Exception {
+        Seller seller  = sellerService.getSellerProfile(jwt);
+
+        Long totalMoney = orderService.totalMoneySellerOrder(seller.getId());
+
+        Integer totalProduct = productService.getTotalProductBySellerId(seller.getId());
+
+        SellerReportResponse sellerReportResponse = new SellerReportResponse();
+        sellerReportResponse.setTotalMoneyByOrder(totalMoney);
+        sellerReportResponse.setTotalProductBySeller(totalProduct);
+
+        return ResponseEntity.ok(sellerReportResponse);
     }
 }

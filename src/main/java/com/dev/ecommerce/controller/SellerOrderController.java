@@ -44,4 +44,12 @@ public class SellerOrderController {
 
         return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderByOrderId(@PathVariable("id")Long id) throws Exception {
+
+        Order order = orderService.findOrderById(id);
+
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
 }

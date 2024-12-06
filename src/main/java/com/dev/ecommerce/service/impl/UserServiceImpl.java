@@ -1,6 +1,7 @@
 package com.dev.ecommerce.service.impl;
 
 import com.dev.ecommerce.config.JwtProvider;
+import com.dev.ecommerce.domain.AccountStatus;
 import com.dev.ecommerce.exceptions.UserException;
 import com.dev.ecommerce.model.Address;
 import com.dev.ecommerce.model.User;
@@ -8,7 +9,13 @@ import com.dev.ecommerce.repository.AddressRepository;
 import com.dev.ecommerce.repository.UserRepository;
 import com.dev.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +49,18 @@ public class UserServiceImpl implements UserService {
 
         user.getAddresses().removeIf(address -> address.equals(addressRemove));
 
+        return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUserByStatus(AccountStatus accountStatus) {
+        return userRepository.findAllByAccountStatus(accountStatus);
+    }
+
+    @Override
+    public User updateUserAccountStatus(String email, AccountStatus accountStatus) {
+        User user = userRepository.findByEmail(email);
+        user.setAccountStatus(accountStatus);
         return userRepository.save(user);
     }
 }

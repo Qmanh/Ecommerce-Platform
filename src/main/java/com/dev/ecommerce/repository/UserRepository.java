@@ -1,7 +1,10 @@
 package com.dev.ecommerce.repository;
 
+import com.dev.ecommerce.domain.AccountStatus;
 import com.dev.ecommerce.model.Address;
 import com.dev.ecommerce.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("DELETE FROM Address u WHERE u.id = :addressId")
     List<Address> DeleteAddressesByUserId(Long addressId);
+
+    List<User> findAllByAccountStatus(AccountStatus accountStatus);
 }

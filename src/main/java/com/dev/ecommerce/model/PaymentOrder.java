@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class PaymentOrder extends abstractEntity {
 
-    private Long amount;
+    private double amount;
 
     private PaymentOrderStatus status = PaymentOrderStatus.PENDING;
 

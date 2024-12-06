@@ -36,7 +36,7 @@ public class PaymentController {
         boolean paymentSuccess = paymentService.ProceedPaymentOrder(paymentOrder,paymentId,vnp_CardType,vnp_PayDate);
 
         log.info("paymentSuccess: {}",paymentSuccess);
-        if(paymentSuccess){
+        if(paymentSuccess && vnp_CardType=="ATM"){
             for(Order order : paymentOrder.getOrders()){
                 transactionService.createTransaction(order);
                 Seller seller = sellerService.getSellerById(order.getSellerId());

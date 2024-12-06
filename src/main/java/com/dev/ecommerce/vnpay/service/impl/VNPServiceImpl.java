@@ -18,8 +18,8 @@ public class VNPServiceImpl implements VNPService {
 
     private final VNPayConfig vnpayConfig;
     @Override
-    public PaymentResponseDTO createVnPayPayment(HttpServletRequest request, Long totalAmount, Long orderId) {
-        long amount = totalAmount * 100L;
+    public PaymentResponseDTO createVnPayPayment(HttpServletRequest request, Double totalAmount, Long orderId) {
+        Long amount = totalAmount.longValue() * 100L;
         vnpayConfig.setVnp_ReturnUrl(vnpayConfig.getVnp_ReturnUrl()+"/"+orderId);
         log.info(vnpayConfig.getVnp_ReturnUrl());
         String bankCode = "NCB";
@@ -40,6 +40,7 @@ public class VNPServiceImpl implements VNPService {
         paymentResponseDTO.setCode("Ok");
         paymentResponseDTO.setMessage("Successfully");
         paymentResponseDTO.setURL(paymentUrl);
+        vnpayConfig.setVnp_ReturnUrl("http://localhost:3000/payment-success");
 
         return paymentResponseDTO;
     }

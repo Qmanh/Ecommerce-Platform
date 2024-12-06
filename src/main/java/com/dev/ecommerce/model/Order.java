@@ -37,7 +37,7 @@ public class Order extends abstractEntity{
 
     private double totalMrpPrice;
 
-    private Integer totalSellingPrice;
+    private double totalSellingPrice;
 
     private Integer discount;
 

@@ -44,8 +44,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentOrder createOrder(User user, Set<Order> orders, PaymentMethod paymentMethod) {
-        Long amount = orders.stream()
-                .mapToLong(Order::getTotalSellingPrice)
+        Double amount = orders.stream()
+                .mapToDouble(Order::getTotalSellingPrice)
                 .sum();
 
         PaymentOrder paymentOrder = new PaymentOrder();
@@ -71,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponseDTO createShipCod(User user, Long amount, Long id) {
+    public PaymentResponseDTO createShipCod(User user, Double amount, Long id) {
         PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO();
         paymentResponseDTO.setCode("Ok");
         paymentResponseDTO.setMessage("Successfully");
@@ -92,6 +92,7 @@ public class PaymentServiceImpl implements PaymentService {
                     paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
                 }else{
                     order.setPaymentStatus(PaymentStatus.PROCESSING);
+                    order.getPaymentDetails().setPayment_id(""+paymentId);
                 }
                 orderRepository.save(order);
             }

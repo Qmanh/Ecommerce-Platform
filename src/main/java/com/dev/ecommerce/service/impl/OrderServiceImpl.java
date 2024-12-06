@@ -52,7 +52,8 @@ public class OrderServiceImpl implements OrderService {
             createOrder.setUser(user);
             createOrder.setSellerId(sellerId);
             createOrder.setTotalMrpPrice(totalOrderPrice);
-            createOrder.setTotalSellingPrice(totalOrderPrice);
+            createOrder.setDiscount((int) cart.getDiscount());
+            createOrder.setTotalSellingPrice(cart.getTotalSellingPrice());
             createOrder.setTotalItem(totalItem);
             createOrder.setShippingAddress(shippingAddress);
             createOrder.setOrderStatus(OrderStatus.PENDING);
@@ -90,13 +91,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findOrderById(Long orderId) throws Exception {
-        return orderRepository.findById(orderId)
+        return  orderRepository.findById(orderId)
                 .orElseThrow(()-> new Exception("order not found..."));
     }
 
     @Override
-    public List<Order> usersOrderHistory(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public List<Order> usersOrderHistory(Long userId,Integer pageNumber) {
+        Pageable pageable =  PageRequest.of(pageNumber!= null ? pageNumber:0, 5, Sort.unsorted());
+        List<Order> orders = orderRepository.findByUserId(userId,pageable);
+        return orders;
+    }
+
+    @Override
+    public Integer getTotalPageNumberOrderHistory(Long userId) {
+        return orderRepository.findByUserId(userId).size() / 5;
     }
 
     @Override
@@ -156,5 +164,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderItem getOrderItemById(Long orderItemId) throws Exception {
         return orderItemRepository.findById(orderItemId)
                 .orElseThrow(() -> new Exception("Order item not exist..."));
+    }
+
+    @Override
+    public Long totalMoneySellerOrder(Long sellerId) {
+        return orderRepository.totalSellingPriceBySellerId(sellerId);
     }
 }
