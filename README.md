@@ -1,5 +1,3 @@
-# Frontend README
-
 ## Overview
 
 This is the frontend of the E-Commerce Fashion Platform, built using React. It provides a user-friendly interface for browsing products, managing accounts, and processing orders.
