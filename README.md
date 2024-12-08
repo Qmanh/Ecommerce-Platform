@@ -3,6 +3,11 @@
 ## Overview
 
 The E-Commerce Fashion Platform is a digital marketplace designed for multiple sellers to showcase and sell their clothing and fashion products. It provides a user-friendly shopping experience for customers, allowing them to browse, compare, and purchase items from various sellers.
+In this project, it have two branch:
+1. Branch: **[`dev`](https://github.com/Qmanh/Ecommerce-ReactJs-SpringBoot/tree/dev)** (Back-end)
+ - This branch contains the source code for building the Spring Boot application, including all back-end functionalities and APIs.
+2. Branch:  **[`font-end`](https://github.com/Qmanh/Ecommerce-ReactJs-SpringBoot/tree/front-end)**
+ - This branch houses the UI/UX components of the website, featuring the design and interactive elements for the user interface.
 
 ## Features
 
@@ -28,30 +33,10 @@ The E-Commerce Fashion Platform is a digital marketplace designed for multiple s
 
 ### Mobile Compatibility
 - **Responsive Design**: The website will be optimized for both desktop and mobile devices to ensure a seamless shopping experience.
-- 
-## Technology Stack
+## Tech Stack ☕
 
-The E-Commerce Fashion Platform is built using a modern technology stack designed for scalability, performance, and security. Below are the key technologies utilized in the development of the platform:
+**Client:** React, Redux Toolkit, TailwindCSS 🌀, Material-UI (MUI) 📦, Axios
 
-### Frontend
-- **React.js**
-- **Tailwind CSS**
-- **Material-UI (MUI)**
-- **Redux Toolkit**
-- **Axios**
+**Server:** Java Spring Boot, Spring Security 🔒, JWT (JSON Web Tokens) 🛡️, Java Mail Sender 📧, MySQL 🗄️
 
-### Backend
-- **Java Spring Boot** 
-- **Spring Security**
-- **JWT (JSON Web Tokens)**
-- **JavaMailSender**
-- **MySQL**
-
-### Payment Processing
-- **VNPay**: Use test version.
-
-### Development Tools
-- **Docker**
-- **Git**
-- **Postman**
-
+**Tools:** Docker 🐳, Git 🦊, Postman 📬
