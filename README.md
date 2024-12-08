@@ -28,4 +28,30 @@ The E-Commerce Fashion Platform is a digital marketplace designed for multiple s
 
 ### Mobile Compatibility
 - **Responsive Design**: The website will be optimized for both desktop and mobile devices to ensure a seamless shopping experience.
+- 
+## Technology Stack
+
+The E-Commerce Fashion Platform is built using a modern technology stack designed for scalability, performance, and security. Below are the key technologies utilized in the development of the platform:
+
+### Frontend
+- **React.js**
+- **Tailwind CSS**
+- **Material-UI (MUI)**
+- **Redux Toolkit**
+- **Axios**
+
+### Backend
+- **Java Spring Boot** 
+- **Spring Security**
+- **JWT (JSON Web Tokens)**
+- **JavaMailSender**
+- **MySQL**
+
+### Payment Processing
+- **VNPay**: Use test version.
+
+### Development Tools
+- **Docker**
+- **Git**
+- **Postman**
 
